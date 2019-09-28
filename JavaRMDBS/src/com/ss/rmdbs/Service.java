@@ -3,23 +3,30 @@
  */
 package com.ss.rmdbs;
 
-import java.util.Arrays;
-import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.List;
+
+//import java.util.Arrays;
+//import java.util.Scanner;
 
 /**
  * @author sj Implements the CRUD of the Database
  */
 public class Service {
 
-	private static Scanner scanner;
-	private static Manager manager;
+	//private static Scanner scanner;
+	private static AuthorDAO authorDAO;
+	private static BookDAO bookDAO;
+	private static PublisherDAO publisherDAO;
 	
 	public Service() {
-		scanner = new Scanner(System.in);
-		manager = new Manager();
-//		manager.authorFileCheck();
-//		manager.bookFileCheck();
-//		manager.publisherFileCheck();
+		//scanner = new Scanner(System.in);
+		authorDAO = new AuthorDAO();
+		bookDAO = new BookDAO();
+		publisherDAO = new PublisherDAO();
+		//manager.authorFileCheck();
+		//manager.bookFileCheck();
+		//manager.publisherFileCheck();
 	}
 	
 	//
@@ -28,93 +35,100 @@ public class Service {
 
 	public void createAnAuthor(String authorName) {
 		Author author = new Author(findNextAuthorID(), authorName);
-		manager.writeAuthor(author);
+		authorDAO.writeAuthor(author);
 
 	}
 
 	public void createABook(String bookName, String a_id, String p_id){
 		Book book = new Book(findNextBookID(), bookName, Integer.parseInt(a_id), Integer.parseInt(p_id));
-		manager.writeBook(book);
+		bookDAO.writeBook(book);
 	}
 
 	public void createAPublisher(String publisherName, String publisherAddress) {
 		Publisher publisher = new Publisher(findNextPublisherID(), publisherName, publisherAddress);
-		manager.writePublisher(publisher);
+		publisherDAO.writePublisher(publisher);
 	}
 	
 	public static int findNextAuthorID() {
-		String[][] records = manager.getAuthorTable();
-		//System.out.println("We are in fNAID: " + Arrays.deepToString(manager.getAuthorTable()));
-		if (records == null) {
+
+    	List<Author> authorList = AuthorDAO.getAuthors();
+    	System.out.print("Printing author list: ");
+//    	AuthorDAO.printAuthorList();
+		if (authorList == null) {
 			return 1;
 		}
-		String id = null;
+
+		int id = 0;
 		int max = 0;
-		for (String[] record : records) {
+		for (Author author : authorList) {
 			try {
-				id = record[0];
-			} catch (NullPointerException e) {
-			}
+
+//				System.out.println(author.getID());
+				id = author.getID();
+			} catch (NullPointerException e) {}
 			// System.out.println("The parsed ID is: " + Integer.parseInt(id) + " for
 			// Author: " + record[1]);
-			if (Integer.parseInt(id) > max) {
-				max = Integer.parseInt(id);
+			if (id > max) {
+				max = id;
 			}
 		}
 		// System.out.println("The max is: " + max);
 
-		return max + 1;
+		return max+1;
 	}
 
 	public static int findNextBookID() {
-		String[][] records = manager.getBookTable();
-		try {
-			if (records == null) {
-				return 1;
-			}
-		} catch (ArrayIndexOutOfBoundsException e) {
-			return 0;
+
+    	List<Book> bookList = BookDAO.getBooks();
+//    	BookDAO.printBookList();
+		//System.out.println("We are in fNAID: " + Arrays.deepToString(manager.getBookTable()));
+		if (bookList == null) {
+			return 1;
 		}
-		String id = null;
+		int id = 0;
 		int max = 0;
-		for (String[] record : records) {
+		for (Book book : bookList) {
 			try {
-				id = record[0];
+
+//				System.out.println(book.getID());
+				id = book.getID();
 			} catch (NullPointerException e) {
 			}
-
-			// System.out.println("The parsed ID is: " + Integer.parseInt(id) + " for Book:
-			// " + record[1]);
-			if (Integer.parseInt(id) > max) {
-				max = Integer.parseInt(id);
+			// System.out.println("The parsed ID is: " + Integer.parseInt(id) + " for
+			// Book: " + record[1]);
+			if (id > max) {
+				max = id;
 			}
 		}
 		// System.out.println("The max is: " + max);
-		return max + 1;
+
+		return max+1;
 	}
 
 	public static int findNextPublisherID() {
-		String[][] records = manager.getPublisherTable();
-		// System.out.println(Arrays.deepToString(records));
-		if (records == null) {
+
+    	List<Publisher> publisherList = PublisherDAO.getPublishers();
+//   	System.out.print("Printing publisher list: ");
+//    	PublisherDAO.printPublisherList();
+    	if (publisherList == null) {
 			return 1;
 		}
-		String id = null;
+
+		int id = 0;
 		int max = 0;
-		for (String[] record : records) {
+		for (Publisher publisher : publisherList) {
 			try {
-				id = record[0];
+//				System.out.println(publisher.getID());
+				id = publisher.getID();
 			} catch (NullPointerException e) {
 			}
-
-			// System.out.println("The parsed ID is: " + Integer.parseInt(id) + " for
-			// Publisher: " + record[1]);
-			if (Integer.parseInt(id) > max) {
-				max = Integer.parseInt(id);
+			if (id > max) {
+				max = id;
 			}
 		}
 		// System.out.println("The max is: " + max);
-		return max + 1;
+
+		return max+1;
 	}
 
 	public boolean bookKeyCheckAP(int a_id, int p_id) {
@@ -127,11 +141,10 @@ public class Service {
 			return false;
 	}
 	public boolean bookKeyCheck(int b_id){
-		String[][] bookTable = manager.getBookTable();
-		
+		List<Book> books = BookDAO.getBooks();
 		try {
-			for(String[] record : bookTable) {
-				if(Integer.parseInt(record[0]) == b_id) {
+			for(Book book : books) {
+				if(book.getID() == b_id) {
 					return true;
 				}
 			}
@@ -142,62 +155,61 @@ public class Service {
 	}
 	
 	public boolean authorKeyCheck(int a_id) {
-		String[][] authorTable = manager.getAuthorTable();
-		// System.out.println("Author array: " + Arrays.deepToString(authorTable));
-		// System.out.println("Publisher array: " +
-		// Arrays.deepToString(publisherTable));
+		List<Author> authors = AuthorDAO.getAuthors();
+		//manager.printAuthorList();
 		try {
-			for (String[] record : authorTable) {
+			for(Author author : authors) {
 
-				if (Integer.parseInt(record[0]) == a_id) {
+				//System.out.println("Checking author id: " + a_id + " against :" + author.getID());
+				if(author.getID() == a_id) {
 					return true;
 				}
 			}
-		} catch (NullPointerException err) {
+		}catch (NullPointerException e) {
 			System.out.println("Author ID not found.");
 		}
 		return false;
 	}
 	public boolean publisherKeyCheck(int p_id) {
-		String[][] publisherTable = manager.getPublisherTable();
-		// System.out.println("Author array: " + Arrays.deepToString(authorTable));
-		// System.out.println("Publisher array: " +
-		// Arrays.deepToString(publisherTable));
+		List<Publisher> publishers = PublisherDAO.getPublishers();
+		//manager.printPublisherList();
 		try {
-			for (String[] record : publisherTable) {
-				if (Integer.parseInt(record[0]) == p_id) {
+			for(Publisher publisher : publishers) {
+
+				//System.out.println("Checking publisher id: " + p_id + " against :" + publisher.getID());
+				if(publisher.getID() == p_id) {
 					return true;
 				}
 			}
-		} catch (NullPointerException e) {
+		}catch (NullPointerException e) {
 			System.out.println("Publisher ID not found.");
 		}
 		return false;
 	}
 	
+	public static boolean readAuthorByID(int authorID)
+	{
+		boolean valid = false;
+		List<Author> authors = AuthorDAO.getAuthors();
+		for(Author author : authors){
+			//System.out.println("The name being checked is: '" + record[1] + "' against : '" + authorName + "'");
+			if (author.getID() == authorID) {
+				System.out.println("ID: " + author.getID());
+				System.out.println("Title: " + author.getName());
+				valid = true;
+			}
+		}
+		return valid;
+	}
 	public static boolean readAuthorByName(String authorName)
 	{
 		boolean valid = false;
-		String[][] authorTable = manager.getAuthorTable();
-		for(String[] record : authorTable){
-			//System.out.println("The name being checked is: '" + record[1] + "' against : '" + authorName + "'");
-			if (record[1].compareTo(authorName) == 0) {
-				System.out.println("ID: " + record[0]);
-				System.out.println("Title: " + record[1]);
-				valid = true;
-			}
-		}
-		return valid;
-	}
-	public static boolean readAuthorByID(String authorID)
-	{
-		boolean valid = false;
-		String[][] authorTable = manager.getAuthorTable();
-		for(String[] record : authorTable){
-			//System.out.println("The ID being checked is: '" + record[0] + "' against : '" + authorID + "'");
-			if (record[0].compareTo(authorID) == 0) {
-				System.out.println("ID: " + record[0]);
-				System.out.println("Title: " + record[1]);
+		List<Author> authors = AuthorDAO.getAuthors();
+		for(Author author : authors){
+			//System.out.println("The name being checked is: '" + author.getName() + "' against : '" + authorName + "'");
+			if (author.getName().compareTo(authorName) == 0) {
+				System.out.println("ID: " + author.getID());
+				System.out.println("Title: " + author.getName());
 				valid = true;
 			}
 		}
@@ -205,16 +217,16 @@ public class Service {
 	}
 	
 	
-	public static boolean readBookByID(String bookID) {
+	public static boolean readBookByID(int bookID) {
 		boolean valid = false;
-		String[][] bookTable = manager.getBookTable();
-		for(String[] record : bookTable){
-			//System.out.println("The ID being checked is: '" + record[0] + "' against : '" + bookID + "'");
-			if (record[0].compareTo(bookID) == 0) {
-				System.out.println("ID: " + record[0]);
-				System.out.println("Title: " + record[1]);
-				System.out.println("Author ID: " + record[2]);
-				System.out.println("Publisher ID: " + record[3]);
+		List<Book> books = BookDAO.getBooks();
+		for(Book book : books){
+			//System.out.println("The name being checked is: '" + record[1] + "' against : '" + bookName + "'");
+			if (book.getID() == bookID) {
+				System.out.println("ID: " + book.getID());
+				System.out.println("Title: " + book.getName());
+				System.out.println("Author ID: " + book.getAuthor());
+				System.out.println("Publisher ID: " + book.getPublisher());
 				valid = true;
 			}
 		}
@@ -222,59 +234,59 @@ public class Service {
 	}
 	public static boolean readBookByName(String bookName) {
 		boolean valid = false;
-		String[][] bookTable = manager.getBookTable();
-		for(String[] record : bookTable){
-			//System.out.println("The Title being checked is: '" + record[1] + "' against : '" + bookName + "'");
-			if (record[1].compareTo(bookName) == 0) {
-				System.out.println("ID: " + record[0]);
-				System.out.println("Title: " + record[1]);
-				System.out.println("Author ID: " + record[2]);
-				System.out.println("Publisher ID: " + record[3]);
+		List<Book> books = BookDAO.getBooks();
+		for(Book book : books){
+			//System.out.println("The name being checked is: '" + record[1] + "' against : '" + bookName + "'");
+			if (book.getName().compareTo(bookName) == 0) {
+				System.out.println("ID: " + book.getID());
+				System.out.println("Title: " + book.getName());
+				System.out.println("Author ID: " + book.getAuthor());
+				System.out.println("Publisher ID: " + book.getPublisher());
 				valid = true;
 			}
 		}
 		return valid;
 	}
-	public static boolean readBookByAuthorID(String authorID) {
+	public static boolean readBookByAuthorID(int authorID) {
 		boolean valid = false;
-		String[][] bookTable = manager.getBookTable();
-		for(String[] record : bookTable){
-			//System.out.println("The ID being checked is: '" + record[2] + "' against : '" + authorID + "'");
-			if (record[2].compareTo(authorID) == 0) {
-				System.out.println("ID: " + record[0]);
-				System.out.println("Title: " + record[1]);
-				System.out.println("Author ID: " + record[2]);
-				System.out.println("Publisher ID: " + record[3]);
+		List<Book> books = BookDAO.getBooks();
+		for(Book book : books){
+			//System.out.println("The name being checked is: '" + book.getAuthor() + "' against : '" + authorID + "'");
+			if (book.getAuthor() == authorID) {
+				System.out.println("ID: " + book.getID());
+				System.out.println("Title: " + book.getName());
+				System.out.println("Author ID: " + book.getAuthor());
+				System.out.println("Publisher ID: " + book.getPublisher());
 				valid = true;
 			}
 		}
 		return valid;
 	}
-	public static boolean readBookByPublisherID(String publisherID) {
+	public static boolean readBookByPublisherID(int publisherID) {
 		boolean valid = false;
-		String[][] bookTable = manager.getBookTable();
-		for(String[] record : bookTable){
-			//System.out.println("The ID being checked is: '" + record[3] + "' against : '" + publisherID + "'");
-			if (record[3].compareTo(publisherID) == 0) {
-				System.out.println("ID: " + record[0]);
-				System.out.println("Title: " + record[1]);
-				System.out.println("Author ID: " + record[2]);
-				System.out.println("Publisher ID: " + record[3]);
+		List<Book> books = BookDAO.getBooks();
+		for(Book book : books){
+			//System.out.println("The name being checked is: '" + record[1] + "' against : '" + bookName + "'");
+			if (book.getPublisher() == publisherID) {
+				System.out.println("ID: " + book.getID());
+				System.out.println("Title: " + book.getName());
+				System.out.println("Author ID: " + book.getAuthor());
+				System.out.println("Publisher ID: " + book.getPublisher());
 				valid = true;
 			}
 		}
 		return valid;
 	}
 	
-	public static boolean readPublisherByID(String publisherID) {
+	public static boolean readPublisherByID(int publisherID) {
 		boolean valid = false;
-		String[][] bookTable = manager.getPublisherTable();
-		for(String[] record : bookTable){
+		List<Publisher> publishers = PublisherDAO.getPublishers();
+		for(Publisher publisher : publishers){
 			//System.out.println("The ID being checked is: '" + record[0] + "' against : '" + publisherID + "'");
-			if (record[0].compareTo(publisherID) == 0) {
-				System.out.println("Publisher ID: " + record[0]);
-				System.out.println("Publisher Name: " + record[1]);
-				System.out.println("Publisher Address: " + record[2]);
+			if (publisher.getID() == publisherID) {
+				System.out.println("Publisher ID: " + publisher.getID());
+				System.out.println("Publisher Name: " + publisher.getName());
+				System.out.println("Publisher Address: " + publisher.getAddress());
 				valid = true;
 			}
 		}
@@ -282,13 +294,13 @@ public class Service {
 	}
 	public static boolean readPublisherByName(String publisherName) {
 		boolean valid = false;
-		String[][] bookTable = manager.getPublisherTable();
-		for(String[] record : bookTable){
-			//System.out.println("The Name being checked is: '" + record[1] + "' against : '" + publisherName + "'");
-			if (record[1].compareTo(publisherName) == 0) {
-				System.out.println("Publisher ID: " + record[0]);
-				System.out.println("Publisher Name: " + record[1]);
-				System.out.println("Publisher Address: " + record[2]);
+		List<Publisher> publishers = PublisherDAO.getPublishers();
+		for(Publisher publisher : publishers){
+			//System.out.println("The ID being checked is: '" + record[0] + "' against : '" + publisherID + "'");
+			if (publisher.getName().compareTo(publisherName) == 0) {
+				System.out.println("Publisher ID: " + publisher.getID());
+				System.out.println("Publisher Name: " + publisher.getName());
+				System.out.println("Publisher Address: " + publisher.getAddress());
 				valid = true;
 			}
 		}
@@ -296,136 +308,151 @@ public class Service {
 	}
 	public static boolean readPublisherByAddress(String publisherAddress) {
 		boolean valid = false;
-		String[][] bookTable = manager.getPublisherTable();
-		//System.out.println(Arrays.deepToString(bookTable));
-		for(String[] record : bookTable){
-			//System.out.println("The Address being checked is: '" + record[2] + "' against : '" + publisherAddress + "'");
-			if (record[2].compareTo(publisherAddress) == 0) {
-				System.out.println("Publisher ID: " + record[0]);
-				System.out.println("Publisher Name: " + record[1]);
-				System.out.println("Publisher Address: " + record[2]);
+		List<Publisher> publishers = PublisherDAO.getPublishers();
+		for(Publisher publisher : publishers){
+			//System.out.println("The ID being checked is: '" + record[0] + "' against : '" + publisherID + "'");
+			if (publisher.getAddress().compareTo(publisherAddress) == 0) {
+				System.out.println("Publisher ID: " + publisher.getID());
+				System.out.println("Publisher Name: " + publisher.getName());
+				System.out.println("Publisher Address: " + publisher.getAddress());
 				valid = true;
 			}
 		}
 		return valid;
 	}
 	
-	public boolean updateAnAuthor(String authorID, String authorName) {
-		boolean updated = false;
-		String[][] authorTable = manager.getAuthorTable();
-		int i = 0;
-		for(String[] record : authorTable){
-			if(record[0].compareTo(authorID) == 0) {
-				authorTable[i][1] = authorName;
-				updated = true;
+	public boolean updateAnAuthor(int authorID, String authorName) {
+		boolean valid = false;
+		List<Author> authors = AuthorDAO.getAuthors();
+		for(Author author : authors){
+			//System.out.println("The name being checked is: '" + record[1] + "' against : '" + authorName + "'");
+			if (author.getID() == authorID) {
+				author.setName(authorName);
+				valid = true;
 			}
-			i++;
 		}
-		manager.resetAuthors(authorTable);
-		return updated;
+		authorDAO.resetAuthors(authors);
+		return valid;
+	
 	}
 
-	public boolean updateABook(String bookID, String bookName, String authorID, String publisherID) {
+	public boolean updateABook(int bookID, String bookName, int authorID, int publisherID) {
 		boolean updated = false;
-		String[][] bookTable = manager.getBookTable();
-		int i = 0;
-		if(bookKeyCheckAP(Integer.parseInt(authorID), Integer.parseInt(publisherID)) == false) {
+		List<Book> books = BookDAO.getBooks();
+		if(bookKeyCheckAP(authorID, publisherID) == false) {
 			return updated;
 		}
-		for(String[] record : bookTable){
-			if(record[0].compareTo(bookID) == 0) {
-				bookTable[i][1] = bookName;
-				bookTable[i][2] = authorID;
-				bookTable[i][3] = publisherID;
+		for(Book book : books){
+			if(book.getID() == bookID) {
+				book.setName(bookName);
+				book.setAuthor(authorID);
+				book.setPublisher(publisherID);
 				updated = true;
 			}
-			i++;
 		}
-		manager.resetBooks(bookTable);
+		bookDAO.resetBooks(books);
 		return updated;
 	}
 
-	public boolean updateAPublisher(String publisherID, String publisherName, String publisherAddress) {
+	public boolean updateAPublisher(int publisherID, String publisherName, String publisherAddress) {
 		boolean updated = false;
-		String[][] publisherTable = manager.getPublisherTable();
-		int i = 0;
-		for(String[] record : publisherTable){
-			if(record[0].compareTo(publisherID) == 0) {
-				publisherTable[i][1] = publisherName;
-				publisherTable[i][2] = publisherAddress;
+		List<Publisher> publishers = PublisherDAO.getPublishers();
+		for(Publisher publisher : publishers){
+			if(publisher.getID() == publisherID) {
+				publisher.setName(publisherName);
+				publisher.setAddress(publisherAddress);
 				updated = true;
 			}
-			i++;
 		}
-		manager.resetPublishers(publisherTable);
+		publisherDAO.resetPublishers(publishers);
 		return updated;
 	}
 
-	public boolean deleteAnAuthor(String authorID) {
+	public boolean deleteAnAuthor(int authorID) {
 		boolean updated = false;
-		int newNumRecords = Manager.getNumberOfRecords("Authors.csv")-1;
-		String[][] authorTable = manager.getAuthorTable();
-		String[][] newAuthorTable = new String[newNumRecords][];
-		int i = 0;
-		for(String[] record : authorTable){
-			if(record[0].compareTo(authorID) != 0) {
-				newAuthorTable[i] = record;
+//		int newNumRecords = Manager.getNumberOfRecords("Authors.csv")-1;
+//		String[][] authorTable = manager.getAuthorTable();
+//		String[][] newAuthorTable = new String[newNumRecords][];
+		List<Author> authors = AuthorDAO.getAuthors();
+
+		List<Author> toRemoveAuthors = new ArrayList<Author>();
+		
+		for(Author author : authors){
+			if(author.getID() == authorID) {
+				toRemoveAuthors.add(author);
 				updated = true;
-				i++;
 			}
-		}
-		if(i == newNumRecords) {
-			updated = true;
 		}
 		
 		
 		//Get books associated with this author
-		newNumRecords = Manager.getNumberOfRecords("Books.csv");
-		String[][] bookTable = manager.getBookTable();
+		List<Book> books = BookDAO.getBooks();
+		List<Book> toRemoveBooks = new ArrayList<Book>();
+		//String[][] bookTable = manager.getBookTable();
 
-		int k = 0;
-		for(String[] record : bookTable) {
-			if(record[2].compareTo(authorID) == 0) {
-				k++;
+		for(Book book : books) {
+			if(book.getAuthor() == authorID) {
+				toRemoveBooks.add(book);
 			}
 		}
 		
-		String[][] newBookTable = new String[newNumRecords - k][];
-		
-		int j = 0;
-		for(String[] record : bookTable){
-			if(record[2].compareTo(authorID) != 0) {
-				newBookTable[j] = record;
-				updated = true;
-				j++;
-			}
-		}
-		manager.resetBooks(newBookTable);
-		manager.resetAuthors(newAuthorTable);
+		books.removeAll(toRemoveBooks);
+		authors.removeAll(toRemoveAuthors);
+
+		bookDAO.resetBooks(books);
+		authorDAO.resetAuthors(authors);
 		return updated;
 	}
 
-	public boolean deleteABook(String bookID) {
+	public boolean deleteABook(int bookID) {
 		boolean updated = false;
-		int numRecords = Manager.getNumberOfRecords("books.csv")-1;
-		String[][] bookTable = manager.getBookTable();
-		String[][] newbookTable = new String[numRecords][];
-		int i = 0;
-		for(String[] record : bookTable){
-			if(record[0].compareTo(bookID) != 0) {
-				newbookTable[i] = record;
+		
+		List<Book> books = BookDAO.getBooks();
+
+		List<Book> toRemoveBooks = new ArrayList<Book>();
+		for(Book book : books){
+			if(book.getID() == bookID) {
+				toRemoveBooks.add(book);
 				updated = true;
-				i++;
 			}
 		}
-		if(i == numRecords) {
-			updated = true;
-		}
+
+		books.removeAll(toRemoveBooks);
+		bookDAO.resetBooks(books);
 		return updated;
 	}
 
-	public boolean deleteAPublisher(String publisherID) {
-		return false;
+	public boolean deleteAPublisher(int publisherID) {
+		boolean updated = false;
+		
+		List<Publisher> publishers = PublisherDAO.getPublishers();
+		//manager.printPublisherList();
+		List<Publisher> toRemovePublishers = new ArrayList<Publisher>();
+		
+		for(Publisher publisher : publishers){
+			if(publisher.getID() == publisherID) {
+				toRemovePublishers.add(publisher);
+				updated = true;
+			}
+		}
+		
+		//Get books associated with this author
+		List<Book> books = BookDAO.getBooks();
+		List<Book> toRemoveBooks = new ArrayList<Book>();
+		//String[][] bookTable = manager.getBookTable();
+
+		for(Book book : books) {
+			if(book.getPublisher() == publisherID) {
+				toRemoveBooks.add(book);
+			}
+		}
+		
+		books.removeAll(toRemoveBooks);
+		publishers.removeAll(toRemovePublishers);
+		
+		bookDAO.resetBooks(books);
+		publisherDAO.resetPublishers(publishers);
+		return updated;
 	}
 
 }

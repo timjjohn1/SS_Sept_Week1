@@ -34,7 +34,7 @@ public class RMDBS {
 		boolean replay = false;
 		while (replay == false) {
 			//Menu ouput
-			System.out.println("For all selections, please type the associated number.");
+			System.out.println("\n\n\nFor all selections, please type the associated number.");
 			System.out.println("Choose what you wish to do:");
 			System.out.println("1. Create");
 			System.out.println("2. Read");
@@ -45,7 +45,10 @@ public class RMDBS {
 		
 			//Makes the user pick a valid input and then carries out that input command
 			while (checker == false) {
+				System.out.print("Enter your selction: ");
 				String input = scanner.nextLine();
+				System.out.print("\n\n\n");
+				
 				switch(input) {
 					case "1":
 						System.out.println("Create:");
@@ -73,6 +76,7 @@ public class RMDBS {
 						break;
 					case "5":
 						System.out.println("Done.");
+						System.exit(0);
 						replay = true;
 						break;
 					default:
@@ -104,13 +108,13 @@ public class RMDBS {
 	{
 		System.out.println("What would you like to filter by?");
 		System.out.println("1. Author ID");
-		System.out.println("2. Author name");
+		System.out.println("2. Author Name");
 	}
 	public static void displayReadBookBy()
 	{
 		System.out.println("What would you like to filter by?");
 		System.out.println("1. Book ID");
-		System.out.println("2. Book name");
+		System.out.println("2. Book Name");
 		System.out.println("3. Author ID");
 		System.out.println("4. Publisher ID");
 	}
@@ -118,7 +122,7 @@ public class RMDBS {
 	{
 		System.out.println("What would you like to filter by?");
 		System.out.println("1. Publisher ID");
-		System.out.println("2. Publisher name");
+		System.out.println("2. Publisher Name");
 		System.out.println("3. Publisher Address");
 	}
 	public static void displayUpdate()
@@ -144,7 +148,9 @@ public class RMDBS {
 		boolean checker = false;
 		while (checker == false)
 		{
+			System.out.print("Enter your selction: ");
 			String in = scanner.nextLine();
+			System.out.print("\n\n\n");
 			switch(in) {
 				case "1": 
 					createAuthor();
@@ -176,6 +182,7 @@ public class RMDBS {
 		while (checker == false)
 		{
 			boolean found = false;
+			System.out.print("Enter your selction: ");
 			String in = scanner.nextLine();
 			//User choice switch statement
 			switch(in) {
@@ -193,6 +200,10 @@ public class RMDBS {
 								if(Service.readAuthorByName(authorName)){
 									found = true;
 								}
+								else {
+
+									System.out.println("Invalid Author Name.");
+								}
 							}
 							valid = true;
 						}
@@ -200,8 +211,12 @@ public class RMDBS {
 							while(found == false) {
 								System.out.print("Enter author ID: ");
 								String authorID = scanner.nextLine();
-								if(Service.readAuthorByID(authorID)){
+								if(Service.readAuthorByID(Integer.parseInt(authorID))){
 									found = true;
+								}
+								else {
+
+									System.out.println("Invalid Author ID.");
 								}
 							}
 							valid = true;
@@ -222,6 +237,10 @@ public class RMDBS {
 								if(Service.readBookByName(bookName)){
 									found = true;
 								}
+								else {
+
+									System.out.println("Invalid Book Name.");
+								}
 							}
 							valid2 = true;
 						}
@@ -229,8 +248,12 @@ public class RMDBS {
 							while(found == false) {
 								System.out.print("Enter Book ID: ");
 								String bookID = scanner.nextLine();
-								if(Service.readBookByID(bookID)){
+								if(Service.readBookByID(Integer.parseInt(bookID))){
 									found = true;
+								}
+								else {
+
+									System.out.println("Invalid Book ID.");
 								}
 							}
 							valid2 = true;
@@ -238,9 +261,12 @@ public class RMDBS {
 						else if (readBy.compareTo("3") == 0) {
 							while(found == false) {
 								System.out.print("Enter Author ID: ");
-								String bookID = scanner.nextLine();
-								if(Service.readBookByID(bookID)){
+								String authorID = scanner.nextLine();
+								if(Service.readBookByAuthorID(Integer.parseInt(authorID))){
 									found = true;
+								}
+								else {
+									System.out.println("Invalid Author ID.");
 								}
 							}
 							valid2 = true;
@@ -249,8 +275,12 @@ public class RMDBS {
 							while(found == false) {
 								System.out.print("Enter Publisher ID: ");
 								String publisherID = scanner.nextLine();
-								if(Service.readBookByPublisherID(publisherID)){
+								if(Service.readBookByPublisherID(Integer.parseInt(publisherID))){
 									found = true;
+								}
+								else {
+
+									System.out.println("Invalid Publisher ID.");
 								}
 							}
 							valid2 = true;
@@ -270,15 +300,23 @@ public class RMDBS {
 								if(Service.readPublisherByName(authorName)){
 									found = true;
 								}
+								else {
+
+									System.out.println("Invalid Publisher Name.");
+								}
 							}
 							valid3 = true;
 						}
 						else if (readBy.compareTo("1") == 0) {
 							while(found == false) {
 								System.out.print("Enter publisher ID: ");
-								String authorID = scanner.nextLine();
-								if(Service.readPublisherByID(authorID)){
+								String publisherID = scanner.nextLine();
+								if(Service.readPublisherByID(Integer.parseInt(publisherID))){
 									found = true;
+								}
+								else {
+
+									System.out.println("Invalid Publisher ID.");
 								}
 							}
 							valid3 = true;
@@ -286,9 +324,13 @@ public class RMDBS {
 						else if (readBy.compareTo("3") == 0) {
 							while(found == false) {
 								System.out.print("Enter publisher address: ");
-								String authorID = scanner.nextLine();
-								if(Service.readPublisherByAddress(authorID)){
+								String publisherAddress = scanner.nextLine();
+								if(Service.readPublisherByAddress(publisherAddress)){
 									found = true;
+								}
+								else {
+
+									System.out.println("Invalid Publisher Address.");
 								}
 							}
 							valid3 = true;
@@ -308,6 +350,7 @@ public class RMDBS {
 		boolean checker = false;
 		while (checker == false)
 		{
+			System.out.print("Enter your selction: ");
 			String in = scanner.nextLine();
 			switch(in) {
 				case "1": 
@@ -334,18 +377,20 @@ public class RMDBS {
 		boolean checker = false;
 		while (checker == false)
 		{
+			System.out.print("Enter your selction: ");
 			String in = scanner.nextLine();
+			
 			switch(in) {
 				case "1": 
 					deleteAuthor();
 					checker = true;
 					break;
 				case "2":
-					//deleteBook();
+					deleteBook();
 					checker = true;
 					break;
 				case "3":
-					//deletePublisher();
+					deletePublisher();
 					checker = true;
 					break;
 				default:
@@ -366,13 +411,18 @@ public class RMDBS {
 		String authorName = null;
 
 		while (replay == false) {
-			System.out.println("Name of Author?");
+			System.out.print("Name of Author: ");
 
 			authorName = scanner.nextLine();
 
 			// Add and user input screens here
 			if (authorName != "" && authorName != null) {
 				replay = true;
+
+			}
+			else {
+
+				System.out.println("Invalid Author Name.");
 			}
 		}
 		service.createAnAuthor(authorName);
@@ -381,17 +431,17 @@ public class RMDBS {
 	//Will get the name, author id, and the publisher id for the book entry and send them to the service layer to be created
 	//Service layer will filter out which entries are valid and it will loop until a valid one is input
 	public static void createBook() {
-		System.out.println("Name of Book?");
+		System.out.print("Name of Book: ");
 
 		String bookName = scanner.nextLine();
 
 		while (true) {
 
-			System.out.println("Author ID?");
+			System.out.print("Author ID: ");
 
 			String a_id = scanner.nextLine();
 
-			System.out.println("Publisher ID?");
+			System.out.print("Publisher ID: ");
 
 			String p_id = scanner.nextLine();
 
@@ -400,16 +450,18 @@ public class RMDBS {
 				service.createABook(bookName, a_id, p_id);
 				return;
 			}
+
+			System.out.println("Invalid combination of Author and Publisher ID.");
 		}
 	}
 	
 	//Will get the inputed publisher name and address and send it to the service layer to be processed
 	public static void createPublisher() {
-		System.out.println("Name of Publisher?");
+		System.out.print("Name of Publisher: ");
 
 		String publisherName = scanner.nextLine();
 
-		System.out.println("Publishers Address?");
+		System.out.print("Publishers Address: ");
 
 		String publisherAddress = scanner.nextLine();
 
@@ -429,7 +481,7 @@ public class RMDBS {
 		String authorName = null;
 
 		while (replay == true) {
-			System.out.println("ID of Author?");
+			System.out.print("ID of Author: ");
 
 			authorID = scanner.nextLine();
 
@@ -437,18 +489,26 @@ public class RMDBS {
 			if (service.authorKeyCheck(Integer.parseInt(authorID))) {
 				replay = false;
 			}
+			else {
+
+				System.out.println("Invalid Author Name.");
+			}
 		}
 		replay = true;
 		while (replay == true) {
-			System.out.println("New name of Author?");
+			System.out.print("New name of Author: ");
 			
 			authorName = scanner.nextLine();
 			
 			if(authorName != "" && authorName != null) {
 				replay = false;
 			}
+			else {
+
+				System.out.println("Invalid Author Name.");
+			}
 		}
-		service.updateAnAuthor(authorID, authorName);
+		service.updateAnAuthor(Integer.parseInt(authorID), authorName);
 	}
 
 	//Gets the ID for the book that wants to be changed from the user
@@ -465,7 +525,7 @@ public class RMDBS {
 		String publisherID = null;
 
 		while (replay == true) {
-			System.out.println("ID of Book?");
+			System.out.print("ID of Book: ");
 
 			bookID = scanner.nextLine();
 
@@ -473,34 +533,52 @@ public class RMDBS {
 			if (service.authorKeyCheck(Integer.parseInt(bookID))) {
 				replay = false;
 			}
+			else {
+
+				System.out.println("Invalid Book ID.");
+			}
 		}
 		replayName = true;
 		while (replayName == true && replayAID == true && replayPID == true) {
-			System.out.println("New name of Book?");
+			System.out.print("New name of Book: ");
 			
 			bookName = scanner.nextLine();
 			
 			if(bookName != "" && bookName != null) {
+
 				replayName = false;
 			}
-			System.out.println("New ID of Author?");
+			else {
+
+				System.out.println("Invalid Book Name.");
+			}
+			
+			System.out.print("New ID of Author: ");
 			
 			authorID = scanner.nextLine();
 			
 			if(authorID != "" && authorID != null) {
 				replayAID = false;
 			}
-			System.out.println("New ID of Publisher?");
+			else {
+
+				System.out.println("Invalid Author ID.");
+			}
+			System.out.print("New ID of Publisher: ");
 			
 			publisherID = scanner.nextLine();
 			
 			if(publisherID != "" && publisherID != null) {
 				replayPID = false;
 			}
+			else {
+
+				System.out.println("Invalid Publisher ID.");
+			}
 			
 			
 		}
-		service.updateABook(bookID, bookName, authorID, publisherID);
+		service.updateABook(Integer.parseInt(bookID), bookName, Integer.parseInt(authorID), Integer.parseInt(publisherID));
 	}
 	
 
@@ -514,7 +592,7 @@ public class RMDBS {
 		String publisherAddress = null;
 
 		while (replay == true) {
-			System.out.println("ID of Publisher?");
+			System.out.print("ID of Publisher: ");
 
 			publisherID = scanner.nextLine();
 
@@ -522,30 +600,40 @@ public class RMDBS {
 			if (service.publisherKeyCheck(Integer.parseInt(publisherID))) {
 				replay = false;
 			}
+			else {
+				System.out.println("Invalid Publisher ID.");
+			}
 		}
 		replay = true;
 		while (replay == true) {
-			System.out.println("New name of publisher?");
+			System.out.print("New name of publisher: ");
 			
 			publisherName = scanner.nextLine();
 			
 			if(publisherName != "" && publisherName != null) {
 				replay = false;
 			}
+			else {
+				System.out.println("Invalid Publisher Name.");
+			}
 			
 		}
 		replay = true;
 		while (replay == true) {
-			System.out.println("New address of publisher?");
+			System.out.print("New address of publisher: ");
 			
 			publisherAddress = scanner.nextLine();
 			
 			if(publisherAddress != "" && publisherAddress != null) {
 				replay = false;
 			}
+			else {
+
+				System.out.println("Invalid Publisher Address.");
+			}
 			
 		}
-		service.updateAPublisher(publisherID, publisherName, publisherAddress);
+		service.updateAPublisher(Integer.parseInt(publisherID), publisherName, publisherAddress);
 	}
 	
 	//
@@ -559,7 +647,7 @@ public class RMDBS {
 		String authorID = null;
 
 		while (replay == false) {
-			System.out.println("ID of Author?");
+			System.out.print("ID of Author: ");
 
 			authorID = scanner.nextLine();
 
@@ -567,16 +655,20 @@ public class RMDBS {
 			if (service.authorKeyCheck(Integer.parseInt(authorID))) {
 				replay = true;
 			}
+			else {
+
+				System.out.println("Invalid Author ID.");
+			}
 		}
-		service.deleteAnAuthor(authorID);
+		service.deleteAnAuthor(Integer.parseInt(authorID));
 	}
-	public void deleteBook() {
+	public static void deleteBook() {
 		boolean replay = false;
 
 		String bookID = null;
 
 		while (replay == false) {
-			System.out.println("ID of book?");
+			System.out.print("ID of book: ");
 
 			bookID = scanner.nextLine();
 
@@ -584,11 +676,34 @@ public class RMDBS {
 			if (service.bookKeyCheck(Integer.parseInt(bookID))) {
 				replay = true;
 			}
+			else {
+
+				System.out.println("Invalid Book ID.");
+			}
 		}
-		service.deleteABook(bookID);
+		service.deleteABook(Integer.parseInt(bookID));
 	}
-	public void deletePublisher() {
-		
+	public static void deletePublisher() {
+		boolean replay = false;
+
+		String publisherID = null;
+
+		while (replay == false) {
+			System.out.print("ID of publisher: ");
+
+			publisherID = scanner.nextLine();
+
+			// Add and user input screens here
+			if (service.publisherKeyCheck(Integer.parseInt(publisherID))) {
+				replay = true;
+			}
+			else {
+
+				System.out.println("Invalid Publisher ID.");
+			}
+		}
+		service.deleteAPublisher(Integer.parseInt(publisherID));
+	
 	}
 	
 }
