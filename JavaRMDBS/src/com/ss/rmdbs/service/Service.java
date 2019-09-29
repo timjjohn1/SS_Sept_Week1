@@ -1,10 +1,17 @@
 /**
  * 
  */
-package com.ss.rmdbs;
+package com.ss.rmdbs.service;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.ss.rmdbs.dao.AuthorDAO;
+import com.ss.rmdbs.dao.BookDAO;
+import com.ss.rmdbs.dao.PublisherDAO;
+import com.ss.rmdbs.objs.Author;
+import com.ss.rmdbs.objs.Book;
+import com.ss.rmdbs.objs.Publisher;
 
 //import java.util.Arrays;
 //import java.util.Scanner;
@@ -36,7 +43,6 @@ public class Service {
 	public void createAnAuthor(String authorName) {
 		Author author = new Author(findNextAuthorID(), authorName);
 		authorDAO.writeAuthor(author);
-
 	}
 
 	public void createABook(String bookName, String a_id, String p_id){
@@ -194,7 +200,7 @@ public class Service {
 		for(Author author : authors){
 			//System.out.println("The name being checked is: '" + record[1] + "' against : '" + authorName + "'");
 			if (author.getID() == authorID) {
-				System.out.println("ID: " + author.getID());
+				System.out.println("Author ID: " + author.getID());
 				System.out.println("Title: " + author.getName());
 				valid = true;
 			}
@@ -208,7 +214,7 @@ public class Service {
 		for(Author author : authors){
 			//System.out.println("The name being checked is: '" + author.getName() + "' against : '" + authorName + "'");
 			if (author.getName().compareTo(authorName) == 0) {
-				System.out.println("ID: " + author.getID());
+				System.out.println("Author ID: " + author.getID());
 				System.out.println("Title: " + author.getName());
 				valid = true;
 			}
@@ -223,7 +229,7 @@ public class Service {
 		for(Book book : books){
 			//System.out.println("The name being checked is: '" + record[1] + "' against : '" + bookName + "'");
 			if (book.getID() == bookID) {
-				System.out.println("ID: " + book.getID());
+				System.out.println("Book ID: " + book.getID());
 				System.out.println("Title: " + book.getName());
 				System.out.println("Author ID: " + book.getAuthor());
 				System.out.println("Publisher ID: " + book.getPublisher());
@@ -238,7 +244,7 @@ public class Service {
 		for(Book book : books){
 			//System.out.println("The name being checked is: '" + record[1] + "' against : '" + bookName + "'");
 			if (book.getName().compareTo(bookName) == 0) {
-				System.out.println("ID: " + book.getID());
+				System.out.println("Book ID: " + book.getID());
 				System.out.println("Title: " + book.getName());
 				System.out.println("Author ID: " + book.getAuthor());
 				System.out.println("Publisher ID: " + book.getPublisher());
@@ -253,7 +259,7 @@ public class Service {
 		for(Book book : books){
 			//System.out.println("The name being checked is: '" + book.getAuthor() + "' against : '" + authorID + "'");
 			if (book.getAuthor() == authorID) {
-				System.out.println("ID: " + book.getID());
+				System.out.println("Book ID: " + book.getID());
 				System.out.println("Title: " + book.getName());
 				System.out.println("Author ID: " + book.getAuthor());
 				System.out.println("Publisher ID: " + book.getPublisher());
@@ -268,7 +274,7 @@ public class Service {
 		for(Book book : books){
 			//System.out.println("The name being checked is: '" + record[1] + "' against : '" + bookName + "'");
 			if (book.getPublisher() == publisherID) {
-				System.out.println("ID: " + book.getID());
+				System.out.println("Book ID: " + book.getID());
 				System.out.println("Title: " + book.getName());
 				System.out.println("Author ID: " + book.getAuthor());
 				System.out.println("Publisher ID: " + book.getPublisher());
@@ -383,7 +389,7 @@ public class Service {
 				updated = true;
 			}
 		}
-		
+		System.out.println(toRemoveAuthors.toString());
 		
 		//Get books associated with this author
 		List<Book> books = BookDAO.getBooks();

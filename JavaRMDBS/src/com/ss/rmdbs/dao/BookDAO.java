@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.ss.rmdbs;
+package com.ss.rmdbs.dao;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -10,6 +10,8 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+
+import com.ss.rmdbs.objs.Book;
 
 /**
  * @author sj
@@ -73,29 +75,14 @@ public class BookDAO {
 					// f.printStackTrace();
 				}
 			}
+
+	    	inputStream.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		// System.out.println("This is the book table: " +
-		// Arrays.deepToString(bookTable));
-
-		// printbookList();
-		// System.out.println("contents of LIST to CSV");
-		// convertbooksCSV();
 
 		return bookList;
 	}
-
-//	public static void printBookList() {
-//		if (books != null) {
-//			for (Book book : books) {
-//				System.out.print(book.getID());
-//				System.out.println(book.getName());
-//				System.out.println(book.getAuthor());
-//				System.out.println(book.getPublisher());
-//			}
-//		}
-//	}
 
 	public static StringBuilder convertBooksCSV(List<Book> bookList) {
 		StringBuilder csvString = new StringBuilder();
@@ -186,7 +173,6 @@ public class BookDAO {
 		pw.close();
 		
 		setBooks(readBooks());
-		//bookTable = updateBookArray();
 		
 		System.out.println("Book has been added to the database.");
 	}

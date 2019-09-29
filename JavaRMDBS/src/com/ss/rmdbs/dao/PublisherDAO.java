@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.ss.rmdbs;
+package com.ss.rmdbs.dao;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -10,6 +10,8 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+
+import com.ss.rmdbs.objs.Publisher;
 
 /**
  * @author sj
@@ -76,27 +78,14 @@ public class PublisherDAO {
 					// f.printStackTrace();
 				}
 			}
+	    	inputStream.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		//System.out.println("This is the publisher table: " + Arrays.deepToString(publisherTable));
-    	
-    	//printpublisherList();
-		//System.out.println("contents of LIST to CSV");
-    	//convertpublishersCSV();
     	
     	return publisherList;
     }
     
-//    public static void printPublisherList() {
-//    	if(publishers != null) {
-//	    	for(Publisher publisher : publishers) {
-//	    		System.out.print(publisher.getID());
-//	    		System.out.println(publisher.getName());
-//	    		System.out.println(publisher.getAddress());
-//	    	}
-//    	}
-//    }
     public static StringBuilder convertPublishersCSV(List<Publisher> publisherList) {
     	StringBuilder csvString = new StringBuilder();
     	
@@ -108,8 +97,7 @@ public class PublisherDAO {
     	return csvString;
     }
 
-	public static void publisherFileCheck()
-	{
+	public static void publisherFileCheck(){
 		FileWriter fw = null;
 		try {
 			File file = new File("Publishers.csv");
@@ -140,8 +128,7 @@ public class PublisherDAO {
 		pw.close();
 	}
 	
-	public void resetPublishers(List<Publisher> publisherList)
-	{
+	public void resetPublishers(List<Publisher> publisherList){
 		FileWriter fw = null;
 		try {
 			fw = new FileWriter("Publishers.csv", false);
@@ -162,8 +149,7 @@ public class PublisherDAO {
 		pw.close();
 	}
 	
-	public void writePublisher(Publisher publisher)
-	{
+	public void writePublisher(Publisher publisher){
 		FileWriter fw = null;
 		try {
 			fw = new FileWriter("Publishers.csv", true);

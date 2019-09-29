@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.ss.rmdbs;
+package com.ss.rmdbs.objs;
 
 /**
  * @author sj

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.ss.rmdbs;
+package com.ss.rmdbs.dao;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -10,6 +10,8 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+
+import com.ss.rmdbs.objs.Author;
 
 /**
  * @author sj
@@ -44,9 +46,6 @@ public class AuthorDAO {
     	List<Author> authorList = new ArrayList<Author>();
     	
 		File file = new File("Authors.csv");
-
-//		String[][] authorTable = new String[getNumberOfRecords("Authors.csv")][];
-		
 		
 		int id;
 		String name;
@@ -72,26 +71,15 @@ public class AuthorDAO {
 					// f.printStackTrace();
 				}
 			}
+
+	    	inputStream.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		//System.out.println("This is the author table: " + Arrays.deepToString(authorTable));
-    	
-    	//printAuthorList();
-		//System.out.println("contents of LIST to CSV");
-    	//convertAuthorsCSV();
-    	
+		
     	return authorList;
     }
     
-//    public static void printAuthorList() {
-//    	if(authors != null) {
-//	    	for(Author author : authors) {
-//	    		System.out.print(author.getID());
-//	    		System.out.println(author.getName());
-//	    	}
-//    	}
-//    }
     public static StringBuilder convertAuthorsCSV(List<Author> authorList) {
     	StringBuilder csvString = new StringBuilder();
     	
@@ -160,8 +148,7 @@ public class AuthorDAO {
 		pw.close();
 	}
 	
-	public void writeAuthor(Author author)
-	{
+	public void writeAuthor(Author author){
 		FileWriter fw = null;
 		try {
 			fw = new FileWriter("Authors.csv", true);
