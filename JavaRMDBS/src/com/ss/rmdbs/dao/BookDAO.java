@@ -87,7 +87,7 @@ public class BookDAO {
 	public static StringBuilder convertBooksCSV(List<Book> bookList) {
 		StringBuilder csvString = new StringBuilder();
 
-		if (books != null) {
+		if (bookList != null) {
 			for (Book book : bookList) {
 				csvString.append(book.getID() + "," + book.getName() + "," + book.getAuthor() + ","
 						+ book.getPublisher() + "\n");
@@ -96,7 +96,7 @@ public class BookDAO {
 		return csvString;
 	}
 	
-	public void bookFileCheck()
+	public static boolean bookFileCheck()
 	{
 		FileWriter fw = null;
 		try {
@@ -110,7 +110,7 @@ public class BookDAO {
 		    else{
 		         System.out.println("File already present.");
 		         fw.close();
-		         return;
+		         return false;
 		    }
 		}
 		catch (IOException e)
@@ -127,9 +127,11 @@ public class BookDAO {
 		pw.write(record.toString());
 		pw.close();
 		
+		return true;
+		
 	}
 	
-	public void resetBooks(List<Book> bookList)
+	public static void resetBooks(List<Book> bookList)
 	{
 		FileWriter fw = null;
 		try {

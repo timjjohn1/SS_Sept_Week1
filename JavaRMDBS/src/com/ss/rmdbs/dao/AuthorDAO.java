@@ -83,7 +83,7 @@ public class AuthorDAO {
     public static StringBuilder convertAuthorsCSV(List<Author> authorList) {
     	StringBuilder csvString = new StringBuilder();
     	
-    	if(authors != null) {
+    	if(authorList != null) {
     		for(Author author : authorList) {
     			csvString.append(author.getID() + "," + author.getName() + "\n");
     		}
@@ -91,18 +91,19 @@ public class AuthorDAO {
     	return csvString;
     }
     
-    public void authorFileCheck()
+    public static boolean authorFileCheck()
 	{
 		try {
 			File file = new File("Authors.csv");
 	        boolean fvar = file.createNewFile();
 		    if (fvar){
 		         System.out.println("File has been created successfully.");
+		         
 		    }
 		    else{
 		         System.out.println("File already present.");
 		         setAuthors(readAuthors());
-		         return;
+		         return false;
 		    }
 		}
 		catch (IOException e)
@@ -125,10 +126,14 @@ public class AuthorDAO {
 		
 		pw.write(record.toString());
 		pw.close();
+		
+		return true;
 	}
     
-	public void resetAuthors(List<Author> authors)
+	public static void resetAuthors(List<Author> authors)
 	{
+
+		//System.out.println(convertAuthorsCSV(authors).toString());
 		FileWriter fw = null;
 		try {
 			fw = new FileWriter("Authors.csv", false);
@@ -143,7 +148,7 @@ public class AuthorDAO {
 		String fields = "A_id,A_name\n";
 		pw.write(fields);
 		pw.write(convertAuthorsCSV(authors).toString());
-
+		//System.out.println(convertAuthorsCSV(authors).toString());
 			
 		pw.close();
 	}
@@ -159,6 +164,7 @@ public class AuthorDAO {
 		PrintWriter pw = new PrintWriter(fw);
 		
 		StringBuilder record = new StringBuilder();
+		
 		record.append(author.getID() + ",");
 		record.append(author.getName());
 		record.append("\n");

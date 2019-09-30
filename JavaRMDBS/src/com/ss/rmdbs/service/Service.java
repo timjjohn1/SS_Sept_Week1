@@ -45,8 +45,8 @@ public class Service {
 		authorDAO.writeAuthor(author);
 	}
 
-	public void createABook(String bookName, String a_id, String p_id){
-		Book book = new Book(findNextBookID(), bookName, Integer.parseInt(a_id), Integer.parseInt(p_id));
+	public void createABook(String bookName, int a_id, int p_id){
+		Book book = new Book(findNextBookID(), bookName, a_id, p_id);
 		bookDAO.writeBook(book);
 	}
 
@@ -56,11 +56,8 @@ public class Service {
 	}
 	
 	public static int findNextAuthorID() {
-
-    	List<Author> authorList = AuthorDAO.getAuthors();
-    	System.out.print("Printing author list: ");
-//    	AuthorDAO.printAuthorList();
-		if (authorList == null) {
+		List<Author> authorList = AuthorDAO.getAuthors();
+    	if (authorList == null || authorList.size() == 0) {
 			return 1;
 		}
 
@@ -88,7 +85,7 @@ public class Service {
     	List<Book> bookList = BookDAO.getBooks();
 //    	BookDAO.printBookList();
 		//System.out.println("We are in fNAID: " + Arrays.deepToString(manager.getBookTable()));
-		if (bookList == null) {
+		if (bookList == null || bookList.size() == 0) {
 			return 1;
 		}
 		int id = 0;
@@ -116,7 +113,7 @@ public class Service {
     	List<Publisher> publisherList = PublisherDAO.getPublishers();
 //   	System.out.print("Printing publisher list: ");
 //    	PublisherDAO.printPublisherList();
-    	if (publisherList == null) {
+    	if (publisherList == null || publisherList.size() == 0) {
 			return 1;
 		}
 
@@ -157,6 +154,7 @@ public class Service {
 		}catch (NullPointerException e) {
 			System.out.println("Book ID not found.");
 		}
+
 		return false;
 	}
 	
@@ -176,6 +174,7 @@ public class Service {
 		}
 		return false;
 	}
+	
 	public boolean publisherKeyCheck(int p_id) {
 		List<Publisher> publishers = PublisherDAO.getPublishers();
 		//manager.printPublisherList();
@@ -195,183 +194,351 @@ public class Service {
 	
 	public static boolean readAuthorByID(int authorID)
 	{
-		boolean valid = false;
+		Boolean[] valid = new Boolean[1];
+		valid[0] = false;
 		List<Author> authors = AuthorDAO.getAuthors();
-		for(Author author : authors){
-			//System.out.println("The name being checked is: '" + record[1] + "' against : '" + authorName + "'");
-			if (author.getID() == authorID) {
-				System.out.println("Author ID: " + author.getID());
-				System.out.println("Title: " + author.getName());
-				valid = true;
-			}
-		}
-		return valid;
+		authors.stream()
+			.filter(author -> author.getID() == authorID)
+			.forEach(author -> 
+				{
+					System.out.println("Author ID: " + author.getID());
+					System.out.println("Title: " + author.getName().replaceAll("~", ","));
+					valid[0] = true;
+				});
+		
+//		forEach((author) ->{
+//			System.out.println("Author ID: " + author.getID());
+//			System.out.println("Title: " + author.getName().replaceAll("~", ","));
+//		} );
+//		for(Author author : authors){
+//			//System.out.println("The name being checked is: '" + record[1] + "' against : '" + authorName + "'");
+//			if (author.getID() == authorID) {
+//				System.out.println("Author ID: " + author.getID());
+//				System.out.println("Title: " + author.getName().replaceAll("~", ","));
+//				valid = true;
+//			}
+//		}
+		return valid[0];
 	}
 	public static boolean readAuthorByName(String authorName)
 	{
-		boolean valid = false;
+		Boolean[] valid = new Boolean[1];
+		valid[0] = false;
 		List<Author> authors = AuthorDAO.getAuthors();
-		for(Author author : authors){
-			//System.out.println("The name being checked is: '" + author.getName() + "' against : '" + authorName + "'");
-			if (author.getName().compareTo(authorName) == 0) {
+		authors.stream()
+		.filter(author -> author.getName() == authorName)
+		.forEach(author -> 
+			{
 				System.out.println("Author ID: " + author.getID());
-				System.out.println("Title: " + author.getName());
-				valid = true;
-			}
-		}
-		return valid;
+				System.out.println("Title: " + author.getName().replaceAll("~", ","));
+				valid[0] = true;
+			});
+//		for(Author author : authors){
+//			//System.out.println("The name being checked is: '" + author.getName() + "' against : '" + authorName + "'");
+//			if (author.getName().compareTo(authorName) == 0) {
+//				System.out.println("Author ID: " + author.getID());
+//				System.out.println("Title: " + author.getName().replaceAll("~", ","));
+//				valid = true;
+//			}
+//		}
+		return valid[0];
 	}
 	
 	
 	public static boolean readBookByID(int bookID) {
-		boolean valid = false;
+		Boolean[] valid = new Boolean[1];
+		valid[0] = false;
 		List<Book> books = BookDAO.getBooks();
-		for(Book book : books){
-			//System.out.println("The name being checked is: '" + record[1] + "' against : '" + bookName + "'");
-			if (book.getID() == bookID) {
+		books.stream()
+			.filter(book -> book.getID() == bookID)
+			.forEach(book -> 
+			{
 				System.out.println("Book ID: " + book.getID());
-				System.out.println("Title: " + book.getName());
+				System.out.println("Title: " + book.getName().replaceAll("~", ","));
 				System.out.println("Author ID: " + book.getAuthor());
 				System.out.println("Publisher ID: " + book.getPublisher());
-				valid = true;
-			}
-		}
-		return valid;
+				valid[0] = true;
+			});
+		return valid[0];
+		
+//		boolean valid = false;
+//		List<Book> books = BookDAO.getBooks();
+//		for(Book book : books){
+//			//System.out.println("The name being checked is: '" + record[1] + "' against : '" + bookName + "'");
+//			if (book.getID() == bookID) {
+//				System.out.println("Book ID: " + book.getID());
+//				System.out.println("Title: " + book.getName().replaceAll("~", ","));
+//				System.out.println("Author ID: " + book.getAuthor());
+//				System.out.println("Publisher ID: " + book.getPublisher());
+//				valid = true;
+//			}
+//		}
+//		return valid;
 	}
 	public static boolean readBookByName(String bookName) {
-		boolean valid = false;
+		Boolean[] valid = new Boolean[1];
+		valid[0] = false;
 		List<Book> books = BookDAO.getBooks();
-		for(Book book : books){
-			//System.out.println("The name being checked is: '" + record[1] + "' against : '" + bookName + "'");
-			if (book.getName().compareTo(bookName) == 0) {
+		books.stream()
+			.filter(book -> book.getName() == bookName)
+			.forEach(book -> 
+			{
 				System.out.println("Book ID: " + book.getID());
-				System.out.println("Title: " + book.getName());
+				System.out.println("Title: " + book.getName().replaceAll("~", ","));
 				System.out.println("Author ID: " + book.getAuthor());
 				System.out.println("Publisher ID: " + book.getPublisher());
-				valid = true;
-			}
-		}
-		return valid;
+				valid[0] = true;
+			});
+		return valid[0];
+		
+		
+//		boolean valid = false;
+//		List<Book> books = BookDAO.getBooks();
+//		for(Book book : books){
+//			//System.out.println("The name being checked is: '" + record[1] + "' against : '" + bookName + "'");
+//			if (book.getName().compareTo(bookName) == 0) {
+//				System.out.println("Book ID: " + book.getID());
+//				System.out.println("Title: " + book.getName().replaceAll("~", ","));
+//				System.out.println("Author ID: " + book.getAuthor());
+//				System.out.println("Publisher ID: " + book.getPublisher());
+//				valid = true;
+//			}
+//		}
+//		return valid;
 	}
 	public static boolean readBookByAuthorID(int authorID) {
-		boolean valid = false;
+		Boolean[] valid = new Boolean[1];
+		valid[0] = false;
 		List<Book> books = BookDAO.getBooks();
-		for(Book book : books){
-			//System.out.println("The name being checked is: '" + book.getAuthor() + "' against : '" + authorID + "'");
-			if (book.getAuthor() == authorID) {
+		books.stream()
+			.filter(book -> book.getAuthor() == authorID)
+			.forEach(book -> 
+			{
 				System.out.println("Book ID: " + book.getID());
-				System.out.println("Title: " + book.getName());
+				System.out.println("Title: " + book.getName().replaceAll("~", ","));
 				System.out.println("Author ID: " + book.getAuthor());
 				System.out.println("Publisher ID: " + book.getPublisher());
-				valid = true;
-			}
-		}
-		return valid;
+				valid[0] = true;
+			});
+		return valid[0];
+		
+		
+//		boolean valid = false;
+//		List<Book> books = BookDAO.getBooks();
+//		for(Book book : books){
+//			//System.out.println("The name being checked is: '" + book.getAuthor() + "' against : '" + authorID + "'");
+//			if (book.getAuthor() == authorID) {
+//				System.out.println("Book ID: " + book.getID());
+//				System.out.println("Title: " + book.getName().replaceAll("~", ","));
+//				System.out.println("Author ID: " + book.getAuthor());
+//				System.out.println("Publisher ID: " + book.getPublisher());
+//				valid = true;
+//			}
+//		}
+//		return valid;
 	}
 	public static boolean readBookByPublisherID(int publisherID) {
-		boolean valid = false;
+		
+		Boolean[] valid = new Boolean[1];
+		valid[0] = false;
 		List<Book> books = BookDAO.getBooks();
-		for(Book book : books){
-			//System.out.println("The name being checked is: '" + record[1] + "' against : '" + bookName + "'");
-			if (book.getPublisher() == publisherID) {
+		books.stream()
+			.filter(book -> book.getPublisher() == publisherID)
+			.forEach(book -> 
+			{
 				System.out.println("Book ID: " + book.getID());
-				System.out.println("Title: " + book.getName());
+				System.out.println("Title: " + book.getName().replaceAll("~", ","));
 				System.out.println("Author ID: " + book.getAuthor());
 				System.out.println("Publisher ID: " + book.getPublisher());
-				valid = true;
-			}
-		}
-		return valid;
+				valid[0] = true;
+			});
+		return valid[0];
+//		boolean valid = false;
+//		List<Book> books = BookDAO.getBooks();
+//		for(Book book : books){
+//			//System.out.println("The name being checked is: '" + record[1] + "' against : '" + bookName + "'");
+//			if (book.getPublisher() == publisherID) {
+//				System.out.println("Book ID: " + book.getID());
+//				System.out.println("Title: " + book.getName().replaceAll("~", ","));
+//				System.out.println("Author ID: " + book.getAuthor());
+//				System.out.println("Publisher ID: " + book.getPublisher());
+//				valid = true;
+//			}
+//		}
+//		return valid;
 	}
 	
 	public static boolean readPublisherByID(int publisherID) {
-		boolean valid = false;
+		
+		Boolean[] valid = new Boolean[1];
+		valid[0] = false;
 		List<Publisher> publishers = PublisherDAO.getPublishers();
-		for(Publisher publisher : publishers){
-			//System.out.println("The ID being checked is: '" + record[0] + "' against : '" + publisherID + "'");
-			if (publisher.getID() == publisherID) {
+		publishers.stream()
+			.filter(publisher -> publisher.getID() == publisherID)
+			.forEach(publisher -> 
+			{
 				System.out.println("Publisher ID: " + publisher.getID());
-				System.out.println("Publisher Name: " + publisher.getName());
-				System.out.println("Publisher Address: " + publisher.getAddress());
-				valid = true;
-			}
-		}
-		return valid;
+				System.out.println("Publisher Name: " + publisher.getName().replaceAll("~", ","));
+				System.out.println("Publisher Address: " + publisher.getAddress().replaceAll("~", ","));
+				valid[0] = true;
+			});
+		return valid[0];
+//		boolean valid = false;
+//		List<Publisher> publishers = PublisherDAO.getPublishers();
+//		for(Publisher publisher : publishers){
+//			//System.out.println("The ID being checked is: '" + record[0] + "' against : '" + publisherID + "'");
+//			if (publisher.getID() == publisherID) {
+//				System.out.println("Publisher ID: " + publisher.getID());
+//				System.out.println("Publisher Name: " + publisher.getName().replaceAll("~", ","));
+//				System.out.println("Publisher Address: " + publisher.getAddress().replaceAll("~", ","));
+//				valid = true;
+//			}
+//		}
+//		return valid;
 	}
 	public static boolean readPublisherByName(String publisherName) {
-		boolean valid = false;
+		Boolean[] valid = new Boolean[1];
+		valid[0] = false;
 		List<Publisher> publishers = PublisherDAO.getPublishers();
-		for(Publisher publisher : publishers){
-			//System.out.println("The ID being checked is: '" + record[0] + "' against : '" + publisherID + "'");
-			if (publisher.getName().compareTo(publisherName) == 0) {
+		publishers.stream()
+			.filter(publisher -> publisher.getName() == publisherName)
+			.forEach(publisher -> 
+			{
 				System.out.println("Publisher ID: " + publisher.getID());
-				System.out.println("Publisher Name: " + publisher.getName());
-				System.out.println("Publisher Address: " + publisher.getAddress());
-				valid = true;
-			}
-		}
-		return valid;
+				System.out.println("Publisher Name: " + publisher.getName().replaceAll("~", ","));
+				System.out.println("Publisher Address: " + publisher.getAddress().replaceAll("~", ","));
+				valid[0] = true;
+			});
+		return valid[0];
+//		boolean valid = false;
+//		List<Publisher> publishers = PublisherDAO.getPublishers();
+//		for(Publisher publisher : publishers){
+//			//System.out.println("The ID being checked is: '" + record[0] + "' against : '" + publisherID + "'");
+//			if (publisher.getName().compareTo(publisherName) == 0) {
+//				System.out.println("Publisher ID: " + publisher.getID());
+//				System.out.println("Publisher Name: " + publisher.getName().replaceAll("~", ","));
+//				System.out.println("Publisher Address: " + publisher.getAddress().replaceAll("~", ","));
+//				valid = true;
+//			}
+//		}
+//		return valid;
 	}
 	public static boolean readPublisherByAddress(String publisherAddress) {
-		boolean valid = false;
+		
+		Boolean[] valid = new Boolean[1];
+		valid[0] = false;
 		List<Publisher> publishers = PublisherDAO.getPublishers();
-		for(Publisher publisher : publishers){
-			//System.out.println("The ID being checked is: '" + record[0] + "' against : '" + publisherID + "'");
-			if (publisher.getAddress().compareTo(publisherAddress) == 0) {
+		publishers.stream()
+			.filter(publisher -> publisher.getAddress() == publisherAddress)
+			.forEach(publisher -> 
+			{
 				System.out.println("Publisher ID: " + publisher.getID());
-				System.out.println("Publisher Name: " + publisher.getName());
-				System.out.println("Publisher Address: " + publisher.getAddress());
-				valid = true;
-			}
-		}
-		return valid;
+				System.out.println("Publisher Name: " + publisher.getName().replaceAll("~", ","));
+				System.out.println("Publisher Address: " + publisher.getAddress().replaceAll("~", ","));
+				valid[0] = true;
+			});
+		return valid[0];
+//		boolean valid = false;
+//		List<Publisher> publishers = PublisherDAO.getPublishers();
+//		for(Publisher publisher : publishers){
+//			//System.out.println("The ID being checked is: '" + record[0] + "' against : '" + publisherID + "'");
+//			if (publisher.getAddress().compareTo(publisherAddress) == 0) {
+//				System.out.println("Publisher ID: " + publisher.getID());
+//				System.out.println("Publisher Name: " + publisher.getName().replaceAll("~", ","));
+//				System.out.println("Publisher Address: " + publisher.getAddress().replaceAll("~", ","));
+//				valid = true;
+//			}
+//		}
+//		return valid;
 	}
 	
 	public boolean updateAnAuthor(int authorID, String authorName) {
-		boolean valid = false;
+		Boolean[] updated = new Boolean[1];
+		updated[0] = false;
 		List<Author> authors = AuthorDAO.getAuthors();
-		for(Author author : authors){
-			//System.out.println("The name being checked is: '" + record[1] + "' against : '" + authorName + "'");
-			if (author.getID() == authorID) {
-				author.setName(authorName);
-				valid = true;
-			}
-		}
-		authorDAO.resetAuthors(authors);
-		return valid;
-	
+		authors.stream()
+			.filter(author -> author.getID() == authorID)
+			.forEach(author -> 
+				{
+					author.setName(authorName); 
+					updated[0] = true;
+				}
+			);
+		AuthorDAO.resetAuthors(authors);
+		return updated[0];
+//		for(Author author : authors){
+//			//System.out.println("The name being checked is: '" + record[1] + "' against : '" + authorName + "'");
+//			if (author.getID() == authorID) {
+//				author.setName(authorName);
+//				valid = true;
+//			}
+//		}
+//		AuthorDAO.resetAuthors(authors);
+//		return valid;
 	}
 
 	public boolean updateABook(int bookID, String bookName, int authorID, int publisherID) {
-		boolean updated = false;
+
+		Boolean[] updated = new Boolean[1];
+		updated[0] = false;
 		List<Book> books = BookDAO.getBooks();
-		if(bookKeyCheckAP(authorID, publisherID) == false) {
-			return updated;
-		}
-		for(Book book : books){
-			if(book.getID() == bookID) {
-				book.setName(bookName);
-				book.setAuthor(authorID);
-				book.setPublisher(publisherID);
-				updated = true;
-			}
-		}
-		bookDAO.resetBooks(books);
-		return updated;
+		books.stream()
+			.filter(book -> book.getID() == bookID)
+			.forEach(book -> 
+				{
+					book.setName(bookName);
+					book.setAuthor(authorID);
+					book.setPublisher(publisherID); 
+					updated[0] = true;
+				}
+			);
+		BookDAO.resetBooks(books);
+		return updated[0];
+		
+//		boolean updated = false;
+//		List<Book> books = BookDAO.getBooks();
+//		if(bookKeyCheckAP(authorID, publisherID) == false) {
+//			return updated;
+//		}
+//		for(Book book : books){
+//			if(book.getID() == bookID) {
+//				book.setName(bookName);
+//				book.setAuthor(authorID);
+//				book.setPublisher(publisherID);
+//				updated = true;
+//			}
+//		}
+//		BookDAO.resetBooks(books);
+//		return updated;
 	}
 
 	public boolean updateAPublisher(int publisherID, String publisherName, String publisherAddress) {
-		boolean updated = false;
+		Boolean[] updated = new Boolean[1];
+		updated[0] = false;
 		List<Publisher> publishers = PublisherDAO.getPublishers();
-		for(Publisher publisher : publishers){
-			if(publisher.getID() == publisherID) {
-				publisher.setName(publisherName);
-				publisher.setAddress(publisherAddress);
-				updated = true;
-			}
-		}
-		publisherDAO.resetPublishers(publishers);
-		return updated;
+		publishers.stream()
+			.filter(publisher -> publisher.getID() == publisherID)
+			.forEach(publisher -> 
+				{
+					publisher.setName(publisherName);
+					publisher.setAddress(publisherAddress);
+					updated[0] = true;
+				}
+			);
+		PublisherDAO.resetPublishers(publishers);
+		return updated[0];
+		
+//		boolean updated = false;
+//		List<Publisher> publishers = PublisherDAO.getPublishers();
+//		for(Publisher publisher : publishers){
+//			if(publisher.getID() == publisherID) {
+//				publisher.setName(publisherName);
+//				publisher.setAddress(publisherAddress);
+//				updated = true;
+//			}
+//		}
+//		PublisherDAO.resetPublishers(publishers);
+//		return updated;
 	}
 
 	public boolean deleteAnAuthor(int authorID) {
@@ -389,7 +556,7 @@ public class Service {
 				updated = true;
 			}
 		}
-		System.out.println(toRemoveAuthors.toString());
+//		System.out.println(toRemoveAuthors.toString());
 		
 		//Get books associated with this author
 		List<Book> books = BookDAO.getBooks();
@@ -405,8 +572,8 @@ public class Service {
 		books.removeAll(toRemoveBooks);
 		authors.removeAll(toRemoveAuthors);
 
-		bookDAO.resetBooks(books);
-		authorDAO.resetAuthors(authors);
+		BookDAO.resetBooks(books);
+		AuthorDAO.resetAuthors(authors);
 		return updated;
 	}
 
@@ -424,7 +591,7 @@ public class Service {
 		}
 
 		books.removeAll(toRemoveBooks);
-		bookDAO.resetBooks(books);
+		BookDAO.resetBooks(books);
 		return updated;
 	}
 
@@ -456,8 +623,8 @@ public class Service {
 		books.removeAll(toRemoveBooks);
 		publishers.removeAll(toRemovePublishers);
 		
-		bookDAO.resetBooks(books);
-		publisherDAO.resetPublishers(publishers);
+		BookDAO.resetBooks(books);
+		PublisherDAO.resetPublishers(publishers);
 		return updated;
 	}
 

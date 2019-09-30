@@ -28,10 +28,16 @@ public class RMDBS {
 	 */
 	public static void main(String[] args) throws IOException {
 		
+		startDisplay();
+		
+	}
+	
+	public static void startDisplay()
+	{
 		boolean replay = false;
 		while (replay == false) {
 			//Menu ouput
-			System.out.println("\n\n\nFor all selections, please type the associated number.");
+			System.out.println("\n\nFor all selections, please type the associated number.");
 			System.out.println("Choose what you wish to do:");
 			System.out.println("1. Create");
 			System.out.println("2. Read");
@@ -44,30 +50,26 @@ public class RMDBS {
 			while (checker == false) {
 				System.out.print("Enter your selection: ");
 				String input = scanner.nextLine();
-				System.out.print("\n\n\n");
+				System.out.print("\n\n");
 				
 				switch(input) {
 					case "1":
 						System.out.println("Create:");
-						displayCreate();
 						createChoice();
 						checker = true;
 						break;
 					case "2":
 						System.out.println("Read:");
-						displayRead();
 						readChoice();
 						checker = true;
 						break;
 					case "3":
 						System.out.println("Update:");
-						displayUpdate();
 						updateChoice();
 						checker = true;
 						break;
 					case "4":
 						System.out.println("Delete");
-						displayDelete();
 						deleteChoice();
 						checker = true;
 						break;
@@ -81,8 +83,6 @@ public class RMDBS {
 				}	
 			}	
 		}
-		
-		
 	}
 	//
 	//Displays for user options
@@ -93,6 +93,7 @@ public class RMDBS {
 		System.out.println("1. Author");
 		System.out.println("2. Book");
 		System.out.println("3. Publisher");
+		System.out.println("0. -Go Back-");
 	}
 	public static void displayRead()
 	{
@@ -100,12 +101,14 @@ public class RMDBS {
 		System.out.println("1. Author");
 		System.out.println("2. Book");
 		System.out.println("3. Publisher");
+		System.out.println("0. -Go Back-");
 	}
 	public static void displayReadAuthorBy()
 	{
 		System.out.println("What would you like to filter by?");
 		System.out.println("1. Author ID");
 		System.out.println("2. Author Name");
+		System.out.println("0. -Go Back-");
 	}
 	public static void displayReadBookBy()
 	{
@@ -114,6 +117,7 @@ public class RMDBS {
 		System.out.println("2. Book Name");
 		System.out.println("3. Author ID");
 		System.out.println("4. Publisher ID");
+		System.out.println("0. -Go Back-");
 	}
 	public static void displayReadPublisherBy()
 	{
@@ -121,6 +125,7 @@ public class RMDBS {
 		System.out.println("1. Publisher ID");
 		System.out.println("2. Publisher Name");
 		System.out.println("3. Publisher Address");
+		System.out.println("0. -Go Back-");
 	}
 	public static void displayUpdate()
 	{
@@ -128,12 +133,14 @@ public class RMDBS {
 		System.out.println("1. Author");
 		System.out.println("2. Book");
 		System.out.println("3. Publisher");
+		System.out.println("0. -Go Back-");
 	}
 	public static void displayDelete(){
 		System.out.println("What would you like to delete?");
 		System.out.println("1. Author");
 		System.out.println("2. Book");
 		System.out.println("3. Publisher");
+		System.out.println("0. -Go Back-");
 	}
 	
 	
@@ -145,6 +152,8 @@ public class RMDBS {
 		boolean checker = false;
 		while (checker == false)
 		{
+
+			displayCreate();
 			System.out.print("Enter your selection: ");
 			String in = scanner.nextLine();
 			System.out.print("\n\n\n");
@@ -159,6 +168,10 @@ public class RMDBS {
 					break;
 				case "3":
 					createPublisher();
+					checker = true;
+					break;
+				case "0":
+					startDisplay();
 					checker = true;
 					break;
 				default:
@@ -178,195 +191,26 @@ public class RMDBS {
 		boolean checker = false;
 		while (checker == false)
 		{
-			boolean found = false;
+			displayRead();
 			System.out.print("Enter your selection: ");
 			String in = scanner.nextLine();
 			//User choice switch statement
 			switch(in) {
 			//All cases are the same just with different function calls
 				case "1":
-					boolean valid = false;
-					//Loops until valid input is chosen
-					while(valid == false) {
-						displayReadAuthorBy();
-						String readBy = scanner.nextLine();
-						if(readBy.compareTo("2") == 0) {
-							while(found == false) {
-								System.out.print("Enter author name: ");
-								String authorName = scanner.nextLine();
-								if(Service.readAuthorByName(authorName)){
-									found = true;
-								}
-								else {
-
-									System.out.println("Invalid Author Name.");
-								}
-							}
-							valid = true;
-						}
-						else if (readBy.compareTo("1") == 0) {
-							while(found == false) {
-								System.out.print("Enter author ID: ");	
-								int authorID = 0;
-								while(!scanner.hasNextInt()) {
-									System.out.println("Please enter a valid Integer.");
-									System.out.print("ID of Author: ");
-								    scanner.next();
-								}
-								authorID = scanner.nextInt();
-								scanner.nextLine();
-								if(Service.readAuthorByID(authorID)){
-									found = true;
-								}
-								else {
-
-									System.out.println("Invalid Author ID.");
-								}
-							}
-							valid = true;
-						}
-					}
+					readAuthor();
 					checker = true;
 					break;
-					
 				case "2":
-					boolean valid2 = false;
-					while(valid2 == false) {
-						displayReadBookBy();
-						String readBy = scanner.nextLine();
-						if(readBy.compareTo("2") == 0) {
-							while(found == false) {
-								System.out.print("Enter Book name: ");
-								String bookName = scanner.nextLine();
-								if(Service.readBookByName(bookName)){
-									found = true;
-								}
-								else {
-
-									System.out.println("Invalid Book Name.");
-								}
-							}
-							valid2 = true;
-						}
-						else if (readBy.compareTo("1") == 0) {
-							while(found == false) {
-								System.out.print("Enter Book ID: ");
-
-								int bookID = 0;
-								while(!scanner.hasNextInt()) {
-									System.out.println("Please enter a valid Integer.");
-									System.out.print("ID of Book: ");
-								    scanner.next();
-								}
-								bookID = scanner.nextInt();
-								scanner.nextLine();
-								if(Service.readBookByID(bookID)){
-									found = true;
-								}
-								else {
-
-									System.out.println("Invalid Book ID.");
-								}
-							}
-							valid2 = true;
-						}
-						else if (readBy.compareTo("3") == 0) {
-							while(found == false) {
-								System.out.print("Enter Author ID: ");
-								int authorID = 0;
-								while(!scanner.hasNextInt()) {
-									System.out.println("Please enter a valid Integer.");
-									System.out.print("ID of Author: ");
-								    scanner.next();
-								}
-								authorID = scanner.nextInt();
-								scanner.nextLine();
-								if(Service.readBookByAuthorID(authorID)){
-									found = true;
-								}
-								else {
-									System.out.println("Invalid Author ID.");
-								}
-							}
-							valid2 = true;
-						}
-						else if (readBy.compareTo("4") == 0) {
-							while(found == false) {
-								System.out.print("Enter Publisher ID: ");
-								int publisherID = 0;
-								while(!scanner.hasNextInt()) {
-									System.out.println("Please enter a valid Integer.");
-									System.out.print("ID of Publisher: ");
-								    scanner.next();
-								}
-								publisherID = scanner.nextInt();
-								if(Service.readBookByPublisherID(publisherID)){
-									found = true;
-								}
-								else {
-
-									System.out.println("Invalid Publisher ID.");
-								}
-							}
-							valid2 = true;
-						}
-					}
+					readBook();
 					checker = true;
 					break;
 				case "3":
-					boolean valid3 = false;
-					while(valid3 == false) {
-						displayReadPublisherBy();
-						String readBy = scanner.nextLine();
-						if(readBy.compareTo("2") == 0) {
-							while(found == false) {
-								System.out.print("Enter publisher name: ");
-								String authorName = scanner.nextLine();
-								if(Service.readPublisherByName(authorName)){
-									found = true;
-								}
-								else {
-
-									System.out.println("Invalid Publisher Name.");
-								}
-							}
-							valid3 = true;
-						}
-						else if (readBy.compareTo("1") == 0) {
-							while(found == false) {
-								System.out.print("Enter publisher ID: ");
-								int publisherID = 0;
-								while(!scanner.hasNextInt()) {
-									System.out.println("Please enter a valid Integer.");
-									System.out.print("ID of Author: ");
-								    scanner.next();
-								}
-								publisherID = scanner.nextInt();
-								if(Service.readPublisherByID(publisherID)){
-									found = true;
-								}
-								else {
-
-									System.out.println("Invalid Publisher ID.");
-								}
-							}
-							valid3 = true;
-						}
-						else if (readBy.compareTo("3") == 0) {
-							while(found == false) {
-								System.out.print("Enter publisher address: ");
-								String publisherAddress = scanner.nextLine();
-								if(Service.readPublisherByAddress(publisherAddress)){
-									found = true;
-								}
-								else {
-
-									System.out.println("Invalid Publisher Address.");
-								}
-							}
-							valid3 = true;
-						}
-					}
+					readPublisher();
+					checker = true;
+					break;
+				case "0":
+					startDisplay();
 					checker = true;
 					break;
 				default:
@@ -375,12 +219,268 @@ public class RMDBS {
 			System.out.println();
 		}
 	}
+	public static boolean readAuthor() {
+		//Loops until valid input is chosen
+		boolean valid = false;
+		while(valid == false) {
+			displayReadAuthorBy();
+			String readBy = scanner.nextLine();
+			switch(readBy) {
+			case "1":
+				readAuthorByID();
+				valid = true;
+				break;
+			case "2":
+				readAuthorByName();
+				valid = true;
+				break;
+			case "0":
+				readChoice();
+				valid = true;
+				break;
+			default:
+				System.out.println("Invalid Input.");
+			}
+		}
+		return valid;
+	}
+	public static boolean readAuthorByID() {
+		boolean found = false;
+		while(found == false) {
+			System.out.print("Enter author ID: ");	
+			int authorID = 0;
+			while(!scanner.hasNextInt()) {
+				System.out.println("Please enter a valid Integer.");
+				System.out.print("ID of Author: ");
+			    scanner.next();
+			}
+			
+			authorID = scanner.nextInt();
+			scanner.nextLine();
+			if(Service.readAuthorByID(authorID)){
+				found = true;
+			}
+			else {
+
+				System.out.println("Invalid Author ID.");
+			}
+		}
+		return found;
+	}
+	
+	public static boolean readAuthorByName() {
+
+		boolean found = false;
+		while(found == false) {
+			System.out.print("Enter author name: ");
+			String authorName = scanner.nextLine();
+			if(Service.readAuthorByName(authorName)){
+				found = true;
+			}
+			else {
+
+				System.out.println("Invalid Author Name.");
+			}
+		}
+		return found;
+	}
+	public static boolean readBook() {
+		boolean valid = false;
+		while(valid == false) {
+			displayReadBookBy();
+			String readBy = scanner.nextLine();
+			switch (readBy) {
+			case "1":
+				readBookByBookID();
+				valid = true;
+				break;
+			case "2":
+				readBookByBookName();
+				valid = true;
+				break;
+			case "3":
+				readBookByAuthorID();
+				valid = true;
+				break;
+			case "4":
+				readBookByPublisherID();
+				valid = true;
+				break;
+			case "0":
+				readChoice();
+				break;
+			default:
+				System.out.println("Invalid Input.");
+			}
+			
+		}
+		return valid;
+	}
+	public static boolean readBookByBookName() {
+		boolean found = false;
+		while(found == false) {
+			System.out.print("Enter Book name: ");
+			String bookName = scanner.nextLine();
+			if(Service.readBookByName(bookName)){
+				found = true;
+			}
+			else {
+
+				System.out.println("Invalid Book Name.");
+			}
+		}
+		return found;
+	}
+	public static boolean readBookByBookID() {
+		boolean found = false;
+		while(found == false) {
+			System.out.print("Enter Book ID: ");
+
+			int bookID = 0;
+			while(!scanner.hasNextInt()) {
+				System.out.println("Please enter a valid Integer.");
+				System.out.print("ID of Book: ");
+			    scanner.next();
+			}
+			bookID = scanner.nextInt();
+			scanner.nextLine();
+			if(Service.readBookByID(bookID)){
+				found = true;
+			}
+			else {
+
+				System.out.println("Invalid Book ID.");
+			}
+		}
+		return found;
+	}
+	public static boolean readBookByAuthorID() {
+		boolean found = false;
+		while(found == false) {
+			System.out.print("Enter Author ID: ");
+			int authorID = 0;
+			while(!scanner.hasNextInt()) {
+				System.out.println("Please enter a valid Integer.");
+				System.out.print("ID of Author: ");
+			    scanner.next();
+			}
+			authorID = scanner.nextInt();
+			scanner.nextLine();
+			if(Service.readBookByAuthorID(authorID)){
+				found = true;
+			}
+			else {
+				System.out.println("Invalid Author ID.");
+			}
+		}
+		return found;
+	}
+	
+	public static boolean readBookByPublisherID() {
+		boolean found = false;
+		while(found == false) {
+			System.out.print("Enter Publisher ID: ");
+			int publisherID = 0;
+			while(!scanner.hasNextInt()) {
+				System.out.println("Please enter a valid Integer.");
+				System.out.print("ID of Publisher: ");
+			    scanner.next();
+			}
+			publisherID = scanner.nextInt();
+			if(Service.readBookByPublisherID(publisherID)){
+				found = true;
+			}
+			else {
+
+				System.out.println("Invalid Publisher ID.");
+			}
+		}
+		return found;
+	}
+	public static boolean readPublisher() {
+		boolean valid = false;
+		while(valid == false) {
+			displayReadPublisherBy();
+			String readBy = scanner.nextLine();
+			switch(readBy) {
+			case "1":
+				readPublisherByID();
+				break;
+			case "2":
+				readPublisherByName();
+				break;
+			case "3":
+				readPublisherByAddress();
+				break;
+			case "0":
+				readChoice();
+				break;
+			default:
+				System.out.println("Invalid Input.");
+			}
+			
+		}
+		return valid;
+	}
+	public static boolean readPublisherByID() {
+		boolean found = false;
+		while(found == false) {
+			System.out.print("Enter publisher name: ");
+			String authorName = scanner.nextLine();
+			if(Service.readPublisherByName(authorName)){
+				found = true;
+			}
+			else {
+
+				System.out.println("Invalid Publisher Name.");
+			}
+		}
+		return found;
+	}
+	public static boolean readPublisherByName() {
+		boolean found = false;
+		while(found == false) {
+			System.out.print("Enter publisher ID: ");
+			int publisherID = 0;
+			while(!scanner.hasNextInt()) {
+				System.out.println("Please enter a valid Integer.");
+				System.out.print("ID of Author: ");
+			    scanner.next();
+			}
+			publisherID = scanner.nextInt();
+			if(Service.readPublisherByID(publisherID)){
+				found = true;
+			}
+			else {
+
+				System.out.println("Invalid Publisher ID.");
+			}
+		}
+		return found;
+	}
+	public static boolean readPublisherByAddress() {
+		boolean found = false;
+		while(found == false) {
+			System.out.print("Enter publisher address: ");
+			String publisherAddress = scanner.nextLine();
+			if(Service.readPublisherByAddress(publisherAddress)){
+				found = true;
+			}
+			else {
+
+				System.out.println("Invalid Publisher Address.");
+			}
+		}
+		return false;
+	}
 	
 	//Allows the user to choose what they want to update, 1 - Author, 2 - Book, 3 - Publisher
 	public static void updateChoice() {
 		boolean checker = false;
 		while (checker == false)
 		{
+
+			displayUpdate();
 			System.out.print("Enter your selection: ");
 			String in = scanner.nextLine();
 			switch(in) {
@@ -396,6 +496,10 @@ public class RMDBS {
 					updatePublisher();
 					checker = true;
 					break;
+				case "4":
+					startDisplay();
+					checker = true;
+					break;
 				default:
 					System.out.println("Invalid Input.");
 				}
@@ -408,6 +512,7 @@ public class RMDBS {
 		boolean checker = false;
 		while (checker == false)
 		{
+			displayDelete();
 			System.out.print("Enter your selection: ");
 			String in = scanner.nextLine();
 			
@@ -422,6 +527,10 @@ public class RMDBS {
 					break;
 				case "3":
 					deletePublisher();
+					checker = true;
+					break;
+				case "0":
+					startDisplay();
 					checker = true;
 					break;
 				default:
@@ -446,6 +555,8 @@ public class RMDBS {
 
 			authorName = scanner.nextLine();
 
+			authorName = authorName.replaceAll(",", "~");
+
 			// Add and user input screens here
 			if (authorName != "" && authorName != null) {
 				replay = true;
@@ -466,17 +577,34 @@ public class RMDBS {
 
 		String bookName = scanner.nextLine();
 
+		bookName = bookName.replaceAll(",", "~");
+		
+		System.out.println(bookName);
+
 		while (true) {
 
 			System.out.print("Author ID: ");
-
-			String a_id = scanner.nextLine();
-
+			
+			while(!scanner.hasNextInt()) {
+				System.out.println("Please enter a valid Integer.");
+				System.out.print("ID of Author: ");
+			    scanner.next();
+			}
+			int a_id = scanner.nextInt();
+			scanner.nextLine();
+			
 			System.out.print("Publisher ID: ");
 
-			String p_id = scanner.nextLine();
+			while(!scanner.hasNextInt()) {
+				System.out.println("Please enter a valid Integer.");
+				System.out.print("ID of Publisher: ");
+			    scanner.next();
+			}
 
-			if (service.bookKeyCheckAP(Integer.parseInt(a_id), Integer.parseInt(p_id)) == true) {
+			int p_id = scanner.nextInt();
+			scanner.nextLine();
+
+			if (service.bookKeyCheckAP(a_id, p_id) == true) {
 
 				service.createABook(bookName, a_id, p_id);
 				return;
@@ -491,10 +619,15 @@ public class RMDBS {
 		System.out.print("Name of Publisher: ");
 
 		String publisherName = scanner.nextLine();
+		
+		
+		publisherName = publisherName.replaceAll(",", "~");
 
 		System.out.print("Publishers Address: ");
 
 		String publisherAddress = scanner.nextLine();
+		
+		publisherAddress = publisherAddress.replaceAll(",", "~");
 
 		service.createAPublisher(publisherName, publisherAddress);
 	}
@@ -537,6 +670,8 @@ public class RMDBS {
 			
 			scanner.nextLine();
 			authorName = scanner.nextLine();
+
+			authorName = authorName.replaceAll(",", "~");
 			
 			
 			if(authorName != "" && authorName != null) {
@@ -588,6 +723,8 @@ public class RMDBS {
 			System.out.print("New name of Book: ");
 			
 			bookName = scanner.nextLine();
+
+			bookName = bookName.replaceAll(",", "~");
 			
 			if(bookName != "" && bookName != null) {
 
@@ -671,6 +808,8 @@ public class RMDBS {
 			System.out.print("New name of publisher: ");
 			
 			publisherName = scanner.nextLine();
+
+			publisherName = publisherName.replaceAll(",", "~");
 			
 			if(publisherName != "" && publisherName != null) {
 				replay = false;
@@ -685,6 +824,8 @@ public class RMDBS {
 			System.out.print("New address of publisher: ");
 			
 			publisherAddress = scanner.nextLine();
+
+			publisherAddress = publisherAddress.replaceAll(",", "~");
 			
 			if(publisherAddress != "" && publisherAddress != null) {
 				replay = false;
@@ -701,8 +842,6 @@ public class RMDBS {
 	//
 	//deleteChoice() supporting functions
 	//
-	
-	
 	public static void deleteAuthor() {
 		boolean replay = false;
 

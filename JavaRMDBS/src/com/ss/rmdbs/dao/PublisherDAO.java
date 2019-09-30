@@ -89,7 +89,7 @@ public class PublisherDAO {
     public static StringBuilder convertPublishersCSV(List<Publisher> publisherList) {
     	StringBuilder csvString = new StringBuilder();
     	
-    	if(publishers != null) {
+    	if(publisherList != null) {
     		for(Publisher publisher : publisherList) {
     			csvString.append(publisher.getID() + "," + publisher.getName() + "," + publisher.getAddress() + "\n");
     		}
@@ -97,12 +97,11 @@ public class PublisherDAO {
     	return csvString;
     }
 
-	public static void publisherFileCheck(){
+	public static boolean publisherFileCheck(){
 		FileWriter fw = null;
 		try {
 			File file = new File("Publishers.csv");
 	        boolean fvar = file.createNewFile();
-
 			fw = new FileWriter("Publishers.csv", true);
 		    if (fvar){
 		         System.out.println("File has been created successfully.");
@@ -110,7 +109,7 @@ public class PublisherDAO {
 		    else{
 		         System.out.println("File already present.");
 		         fw.close();
-		         return;
+		         return false;
 		    }
 		}
 		catch (IOException e)
@@ -126,9 +125,10 @@ public class PublisherDAO {
 		
 		pw.write(record.toString());
 		pw.close();
+		return true;
 	}
 	
-	public void resetPublishers(List<Publisher> publisherList){
+	public static void resetPublishers(List<Publisher> publisherList){
 		FileWriter fw = null;
 		try {
 			fw = new FileWriter("Publishers.csv", false);
@@ -145,7 +145,6 @@ public class PublisherDAO {
 		pw.write(fields);
 		pw.write(convertPublishersCSV(publisherList).toString());
 
-			
 		pw.close();
 	}
 	
