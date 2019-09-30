@@ -15,7 +15,7 @@ import com.ss.rmdbs.objs.Publisher;
 
 public class PublisherDAOTest {
 
-
+	private PublisherDAO publisherDAO;
 	//private List<Publisher> readPublishers;
 	private List<Publisher> madePublishers;
 	
@@ -25,7 +25,8 @@ public class PublisherDAOTest {
 
 	@Before
 	public void uploadPublishers() throws IOException{
-
+		
+		publisherDAO = new PublisherDAO();
 		//System.out.println("Executing Before.");
 		madePublishers = new ArrayList<Publisher>();
 		publisher1 = new Publisher(1, "Sarah", "123 Addr");
@@ -45,7 +46,7 @@ public class PublisherDAOTest {
 	@Test
 	public void testConvertToCSV() {
 		//System.out.println("Executing test CSV.");
-		StringBuilder csv = PublisherDAO.convertPublishersCSV(madePublishers);
+		StringBuilder csv = publisherDAO.convertPublishersCSV(madePublishers);
 		String str = ("1,Sarah,123 Addr\n"
 				+ "2,Maria,321 Rdda\n"
 				+ "3,Jane Doe,Downtown\n");
@@ -65,15 +66,15 @@ public class PublisherDAOTest {
 	public void testPublisherFileCheckCreate() {
 		File file = new File("Publishers.csv");
 		file.delete();
-		boolean given = PublisherDAO.publisherFileCheck();
+		boolean given = publisherDAO.publisherFileCheck();
 		boolean expected = true;
 		assertEquals(given,expected);
 	}
 	
 	@Test
 	public void testPublisherFileCheck() {
-		PublisherDAO.resetPublishers(madePublishers);
-		boolean given = PublisherDAO.publisherFileCheck();
+		publisherDAO.resetPublishers(madePublishers);
+		boolean given = publisherDAO.publisherFileCheck();
 		boolean expected = false;
 		assertEquals(given,expected);
 	}

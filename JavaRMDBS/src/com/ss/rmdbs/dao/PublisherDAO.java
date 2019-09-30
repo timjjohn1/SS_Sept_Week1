@@ -14,8 +14,9 @@ import java.util.Scanner;
 import com.ss.rmdbs.objs.Publisher;
 
 /**
- * @author sj
- *
+ * @author tj
+ * PublisherDAO is the data access object class
+ * Interacts with the Publisher.csv file to read/write pojos to it
  */
 public class PublisherDAO {
 
@@ -27,24 +28,25 @@ public class PublisherDAO {
 	}
 	
 	
-    private static List<Publisher> publishers;
+    private List<Publisher> publishers;
 
 	/**
 	 * @return the publishers
 	 */
-	public static List<Publisher> getPublishers() {
+	public List<Publisher> getPublishers() {
 		return publishers;
 	}
 
 	/**
 	 * @param publishers the publishers to set
 	 */
-	public static void setPublishers(List<Publisher> publishers) {
-		PublisherDAO.publishers = publishers;
+	public void setPublishers(List<Publisher> publishers) {
+		this.publishers = publishers;
 	}
 	
-	   
-    public static List<Publisher> readPublishers(){
+	//Reading the publishers from the file
+	//Returns the list of publishers found
+    public List<Publisher> readPublishers(){
     	List<Publisher> publisherList = new ArrayList<Publisher>();
     	
 		File file = new File("Publishers.csv");
@@ -86,7 +88,9 @@ public class PublisherDAO {
     	return publisherList;
     }
     
-    public static StringBuilder convertPublishersCSV(List<Publisher> publisherList) {
+
+	//Takes in a list of books and creates a string of them in CSV format
+    public StringBuilder convertPublishersCSV(List<Publisher> publisherList) {
     	StringBuilder csvString = new StringBuilder();
     	
     	if(publisherList != null) {
@@ -97,7 +101,9 @@ public class PublisherDAO {
     	return csvString;
     }
 
-	public static boolean publisherFileCheck(){
+	//Checks to see if the file exists and if it does it won't act
+	//If file DNE then it will created it with the fields as a header
+	public boolean publisherFileCheck(){
 		FileWriter fw = null;
 		try {
 			File file = new File("Publishers.csv");
@@ -128,7 +134,8 @@ public class PublisherDAO {
 		return true;
 	}
 	
-	public static void resetPublishers(List<Publisher> publisherList){
+	//Writes to the file according to an updated publisherList
+	public void resetPublishers(List<Publisher> publisherList){
 		FileWriter fw = null;
 		try {
 			fw = new FileWriter("Publishers.csv", false);
@@ -148,6 +155,7 @@ public class PublisherDAO {
 		pw.close();
 	}
 	
+	//Functions to write a list of publishers to the file
 	public void writePublisher(Publisher publisher){
 		FileWriter fw = null;
 		try {

@@ -4,8 +4,8 @@
 package com.ss.rmdbs.objs;
 
 /**
- * @author sj
- *
+ * @author tj
+ * Simple POJO for an author
  */
 public class Author {
 	public int A_id;

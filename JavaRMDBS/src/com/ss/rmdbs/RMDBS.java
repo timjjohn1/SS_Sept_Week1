@@ -9,8 +9,10 @@ import java.util.Scanner;
 import com.ss.rmdbs.service.Service;
 
 /**
- * @author sj
- *
+ * @author tj
+ *	RMDBS is the main driver for the lms
+ *  This class runs the presentation layer
+ *  Creates an instance of the service layer so that it can interact with the database
  */
 public class RMDBS {
 
@@ -27,9 +29,7 @@ public class RMDBS {
 	 * @throws IOException
 	 */
 	public static void main(String[] args) throws IOException {
-		
 		startDisplay();
-		
 	}
 	
 	public static void startDisplay()
@@ -75,9 +75,8 @@ public class RMDBS {
 						break;
 					case "5":
 						System.out.println("Done.");
-						System.exit(0);
 						replay = true;
-						break;
+						return;
 					default:
 						System.out.println("Invalid input.");
 				}	
@@ -108,6 +107,7 @@ public class RMDBS {
 		System.out.println("What would you like to filter by?");
 		System.out.println("1. Author ID");
 		System.out.println("2. Author Name");
+		System.out.println("3. All");
 		System.out.println("0. -Go Back-");
 	}
 	public static void displayReadBookBy()
@@ -117,6 +117,7 @@ public class RMDBS {
 		System.out.println("2. Book Name");
 		System.out.println("3. Author ID");
 		System.out.println("4. Publisher ID");
+		System.out.println("5. All");
 		System.out.println("0. -Go Back-");
 	}
 	public static void displayReadPublisherBy()
@@ -125,6 +126,7 @@ public class RMDBS {
 		System.out.println("1. Publisher ID");
 		System.out.println("2. Publisher Name");
 		System.out.println("3. Publisher Address");
+		System.out.println("4. All");
 		System.out.println("0. -Go Back-");
 	}
 	public static void displayUpdate()
@@ -171,9 +173,8 @@ public class RMDBS {
 					checker = true;
 					break;
 				case "0":
-					startDisplay();
 					checker = true;
-					break;
+					return;
 				default:
 					System.out.println("Invalid Input.");
 				}
@@ -210,15 +211,17 @@ public class RMDBS {
 					checker = true;
 					break;
 				case "0":
-					startDisplay();
 					checker = true;
-					break;
+					return;
 				default:
 					System.out.println("Invalid Input.");
 				}
 			System.out.println();
 		}
 	}
+	
+	//Menu for reading the author from table
+	//Calls the readBy helper functions
 	public static boolean readAuthor() {
 		//Loops until valid input is chosen
 		boolean valid = false;
@@ -234,6 +237,10 @@ public class RMDBS {
 				readAuthorByName();
 				valid = true;
 				break;
+			case "3":
+				readAuthorAll();
+				valid = true;
+				break;
 			case "0":
 				readChoice();
 				valid = true;
@@ -243,6 +250,12 @@ public class RMDBS {
 			}
 		}
 		return valid;
+	}
+
+	//Reading the authors
+	//Calls the service layer to get the records
+	public static void readAuthorAll() {
+		service.readAuthorAll();
 	}
 	public static boolean readAuthorByID() {
 		boolean found = false;
@@ -257,7 +270,7 @@ public class RMDBS {
 			
 			authorID = scanner.nextInt();
 			scanner.nextLine();
-			if(Service.readAuthorByID(authorID)){
+			if(service.readAuthorByID(authorID)){
 				found = true;
 			}
 			else {
@@ -269,21 +282,22 @@ public class RMDBS {
 	}
 	
 	public static boolean readAuthorByName() {
-
 		boolean found = false;
 		while(found == false) {
 			System.out.print("Enter author name: ");
 			String authorName = scanner.nextLine();
-			if(Service.readAuthorByName(authorName)){
+			if(service.readAuthorByName(authorName)){
 				found = true;
 			}
 			else {
-
 				System.out.println("Invalid Author Name.");
 			}
 		}
 		return found;
 	}
+	
+	//Menu for the reading a book
+	//Calls the helper functions once chosen
 	public static boolean readBook() {
 		boolean valid = false;
 		while(valid == false) {
@@ -306,9 +320,12 @@ public class RMDBS {
 				readBookByPublisherID();
 				valid = true;
 				break;
-			case "0":
-				readChoice();
+			case "5":
+				readBookAll();
+				valid = true;
 				break;
+			case "0":
+				return true;
 			default:
 				System.out.println("Invalid Input.");
 			}
@@ -316,12 +333,20 @@ public class RMDBS {
 		}
 		return valid;
 	}
+	
+	//
+	//Reading the book by different criteria
+	//
+	//Calls the service layer to get the records
+	public static void readBookAll() {
+		service.readBookAll();
+	}
 	public static boolean readBookByBookName() {
 		boolean found = false;
 		while(found == false) {
 			System.out.print("Enter Book name: ");
 			String bookName = scanner.nextLine();
-			if(Service.readBookByName(bookName)){
+			if(service.readBookByName(bookName)){
 				found = true;
 			}
 			else {
@@ -344,7 +369,7 @@ public class RMDBS {
 			}
 			bookID = scanner.nextInt();
 			scanner.nextLine();
-			if(Service.readBookByID(bookID)){
+			if(service.readBookByID(bookID)){
 				found = true;
 			}
 			else {
@@ -366,7 +391,7 @@ public class RMDBS {
 			}
 			authorID = scanner.nextInt();
 			scanner.nextLine();
-			if(Service.readBookByAuthorID(authorID)){
+			if(service.readBookByAuthorID(authorID)){
 				found = true;
 			}
 			else {
@@ -376,6 +401,8 @@ public class RMDBS {
 		return found;
 	}
 	
+	//Reading the publisher by the ID
+	//Calls the service layer to get the records
 	public static boolean readBookByPublisherID() {
 		boolean found = false;
 		while(found == false) {
@@ -387,7 +414,7 @@ public class RMDBS {
 			    scanner.next();
 			}
 			publisherID = scanner.nextInt();
-			if(Service.readBookByPublisherID(publisherID)){
+			if(service.readBookByPublisherID(publisherID)){
 				found = true;
 			}
 			else {
@@ -397,6 +424,9 @@ public class RMDBS {
 		}
 		return found;
 	}
+	
+	//Choices for reading a publisher
+	//Calls the helper functions once choice is picked
 	public static boolean readPublisher() {
 		boolean valid = false;
 		while(valid == false) {
@@ -412,9 +442,12 @@ public class RMDBS {
 			case "3":
 				readPublisherByAddress();
 				break;
-			case "0":
-				readChoice();
+			case "4":
+				readAuthorAll();
+				valid = true;
 				break;
+			case "0":
+				return true;
 			default:
 				System.out.println("Invalid Input.");
 			}
@@ -422,12 +455,17 @@ public class RMDBS {
 		}
 		return valid;
 	}
+	//Read the Publishers according to different criteria
+	//Calls the service layer functions
+	public static void readPublisherAll() {
+		service.readPublisherAll();
+	}
 	public static boolean readPublisherByID() {
 		boolean found = false;
 		while(found == false) {
 			System.out.print("Enter publisher name: ");
 			String authorName = scanner.nextLine();
-			if(Service.readPublisherByName(authorName)){
+			if(service.readPublisherByName(authorName)){
 				found = true;
 			}
 			else {
@@ -448,7 +486,7 @@ public class RMDBS {
 			    scanner.next();
 			}
 			publisherID = scanner.nextInt();
-			if(Service.readPublisherByID(publisherID)){
+			if(service.readPublisherByID(publisherID)){
 				found = true;
 			}
 			else {
@@ -463,7 +501,7 @@ public class RMDBS {
 		while(found == false) {
 			System.out.print("Enter publisher address: ");
 			String publisherAddress = scanner.nextLine();
-			if(Service.readPublisherByAddress(publisherAddress)){
+			if(service.readPublisherByAddress(publisherAddress)){
 				found = true;
 			}
 			else {
@@ -496,10 +534,9 @@ public class RMDBS {
 					updatePublisher();
 					checker = true;
 					break;
-				case "4":
-					startDisplay();
+				case "0":
 					checker = true;
-					break;
+					return;
 				default:
 					System.out.println("Invalid Input.");
 				}
@@ -530,9 +567,8 @@ public class RMDBS {
 					checker = true;
 					break;
 				case "0":
-					startDisplay();
 					checker = true;
-					break;
+					return;
 				default:
 					System.out.println("Invalid Input.");
 				}

@@ -20,7 +20,9 @@ import com.ss.rmdbs.objs.Book;
  *
  */
 public class BookDAOTest {
-
+	
+	private BookDAO bookDAO;
+	
 	private List<Book> madeBooks;
 	
 	private Book book1;
@@ -30,6 +32,7 @@ public class BookDAOTest {
 	@Before
 	public void uploadBooks() throws IOException{
 
+		bookDAO = new BookDAO();
 		//System.out.println("Executing Before.");
 		madeBooks = new ArrayList<Book>();
 		book1 = new Book(1, "Bible", 1, 2);
@@ -46,7 +49,7 @@ public class BookDAOTest {
 	@Test
 	public void testConvertToCSV() {
 		//System.out.println("Executing test CSV.");
-		StringBuilder csv = BookDAO.convertBooksCSV(madeBooks);
+		StringBuilder csv = bookDAO.convertBooksCSV(madeBooks);
 		String str = ("1,Bible,1,2\n"
 				+ "2,To Kill a Mockingbird,2,1\n"
 				+ "3,Into the Wild,3,3\n");
@@ -66,15 +69,15 @@ public class BookDAOTest {
 	public void testBookFileCheckCreate() {
 		File file = new File("Books.csv");
 		file.delete();
-		boolean given = BookDAO.bookFileCheck();
+		boolean given = bookDAO.bookFileCheck();
 		boolean expected = true;
 		assertEquals(given,expected);
 	}
 	
 	@Test
 	public void testBookFileCheck() {
-		BookDAO.resetBooks(madeBooks);
-		boolean given = BookDAO.bookFileCheck();
+		bookDAO.resetBooks(madeBooks);
+		boolean given = bookDAO.bookFileCheck();
 		boolean expected = false;
 		assertEquals(given,expected);
 	}

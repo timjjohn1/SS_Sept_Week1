@@ -23,6 +23,7 @@ import com.ss.rmdbs.objs.Author;
 public class AuthorDAOTest {
 	//private List<Author> readAuthors;
 	private List<Author> madeAuthors;
+	private AuthorDAO authorDAO;
 	
 	private Author author1;
 	private Author author2;
@@ -31,6 +32,7 @@ public class AuthorDAOTest {
 	@Before
 	public void uploadAuthors() throws IOException{
 
+		authorDAO = new AuthorDAO();
 		//System.out.println("Executing Before.");
 		madeAuthors = new ArrayList<Author>();
 		author1 = new Author(1, "Tim");
@@ -68,15 +70,15 @@ public class AuthorDAOTest {
 	public void testAuthorFileCheckCreate() {
 		File file = new File("Authors.csv");
 		file.delete();
-		boolean given = AuthorDAO.authorFileCheck();
+		boolean given = authorDAO.authorFileCheck();
 		boolean expected = true;
 		assertEquals(given,expected);
 	}
 	
 	@Test
 	public void testAuthorFileCheck() {
-		AuthorDAO.resetAuthors(madeAuthors);
-		boolean given = AuthorDAO.authorFileCheck();
+		authorDAO.resetAuthors(madeAuthors);
+		boolean given = authorDAO.authorFileCheck();
 		boolean expected = false;
 		assertEquals(given,expected);
 	}

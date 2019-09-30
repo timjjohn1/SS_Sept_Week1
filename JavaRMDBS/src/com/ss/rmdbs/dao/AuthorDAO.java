@@ -14,8 +14,9 @@ import java.util.Scanner;
 import com.ss.rmdbs.objs.Author;
 
 /**
- * @author sj
- *
+ * @author tj
+ * AuthorDAO is the data access object class
+ * Interacts with the Authors.csv file to read/write pojos to it
  */
 public class AuthorDAO {
 
@@ -80,6 +81,8 @@ public class AuthorDAO {
     	return authorList;
     }
     
+
+	//Takes in a list of authors and creates a string of them in CSV format
     public static StringBuilder convertAuthorsCSV(List<Author> authorList) {
     	StringBuilder csvString = new StringBuilder();
     	
@@ -91,7 +94,9 @@ public class AuthorDAO {
     	return csvString;
     }
     
-    public static boolean authorFileCheck()
+	//Checks to see if the file exists and if it does it won't act
+	//If file DNE then it will created it with the fields as a header
+    public boolean authorFileCheck()
 	{
 		try {
 			File file = new File("Authors.csv");
@@ -129,8 +134,8 @@ public class AuthorDAO {
 		
 		return true;
 	}
-    
-	public static void resetAuthors(List<Author> authors)
+    //Resets the file to have an inputed authors in it
+	public void resetAuthors(List<Author> authors)
 	{
 
 		//System.out.println(convertAuthorsCSV(authors).toString());
@@ -153,6 +158,7 @@ public class AuthorDAO {
 		pw.close();
 	}
 	
+	//Writes and author to a file
 	public void writeAuthor(Author author){
 		FileWriter fw = null;
 		try {

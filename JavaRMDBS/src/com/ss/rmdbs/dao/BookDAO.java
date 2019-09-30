@@ -14,8 +14,9 @@ import java.util.Scanner;
 import com.ss.rmdbs.objs.Book;
 
 /**
- * @author sj
- *
+ * @author tj
+ * BookDAO is the data access object class
+ * Interacts with the Books.csv file to read/write pojos to it
  */
 public class BookDAO {
 
@@ -26,23 +27,25 @@ public class BookDAO {
     	setBooks(readBooks());
 	}
 	
-	private static List<Book> books;
+	private List<Book> books;
 
 	/**
 	 * @return the books
 	 */
-	public static List<Book> getBooks() {
+	public List<Book> getBooks() {
 		return books;
 	}
 
 	/**
 	 * @param books the books to set
 	 */
-	public static void setBooks(List<Book> books) {
-		BookDAO.books = books;
+	public void setBooks(List<Book> books) {
+		this.books = books;
 	}
 
-	public static List<Book> readBooks() {
+	//Reads the file and puts all of the books into a list
+	//Returns the list of books
+	public List<Book> readBooks() {
 		List<Book> bookList = new ArrayList<Book>();
 
 		File file = new File("Books.csv");
@@ -84,7 +87,8 @@ public class BookDAO {
 		return bookList;
 	}
 
-	public static StringBuilder convertBooksCSV(List<Book> bookList) {
+	//Takes in a list of books and creates a string of them in CSV format
+	public StringBuilder convertBooksCSV(List<Book> bookList) {
 		StringBuilder csvString = new StringBuilder();
 
 		if (bookList != null) {
@@ -96,7 +100,9 @@ public class BookDAO {
 		return csvString;
 	}
 	
-	public static boolean bookFileCheck()
+	//Checks to see if the file exists and if it does it won't act
+	//If file DNE then it will created it with the fields as a header
+	public boolean bookFileCheck()
 	{
 		FileWriter fw = null;
 		try {
@@ -130,8 +136,8 @@ public class BookDAO {
 		return true;
 		
 	}
-	
-	public static void resetBooks(List<Book> bookList)
+	//Resets the file to have the desired books in it
+	public void resetBooks(List<Book> bookList)
 	{
 		FileWriter fw = null;
 		try {
@@ -153,6 +159,7 @@ public class BookDAO {
 		pw.close();
 	}
 	
+	//Writes a book to the file
 	public void writeBook(Book book)
 	{
 		FileWriter fw = null;

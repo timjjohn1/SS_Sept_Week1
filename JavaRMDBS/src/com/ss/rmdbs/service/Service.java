@@ -17,29 +17,27 @@ import com.ss.rmdbs.objs.Publisher;
 //import java.util.Scanner;
 
 /**
- * @author sj Implements the CRUD of the Database
+ * @author tj
+ *  Implements the CRUD of the Database
+ *  Is the middle man between the data access objects and the presentation layer(RMDBS.java)
  */
 public class Service {
 
-	//private static Scanner scanner;
-	private static AuthorDAO authorDAO;
-	private static BookDAO bookDAO;
-	private static PublisherDAO publisherDAO;
+	private AuthorDAO authorDAO;
+	private BookDAO bookDAO;
+	private PublisherDAO publisherDAO;
 	
+	//Creates instances of the DAO's
 	public Service() {
 		//scanner = new Scanner(System.in);
 		authorDAO = new AuthorDAO();
 		bookDAO = new BookDAO();
 		publisherDAO = new PublisherDAO();
-		//manager.authorFileCheck();
-		//manager.bookFileCheck();
-		//manager.publisherFileCheck();
 	}
 	
 	//
-	// Creates
+	// Creates - sets up the files and objects
 	//
-
 	public void createAnAuthor(String authorName) {
 		Author author = new Author(findNextAuthorID(), authorName);
 		authorDAO.writeAuthor(author);
@@ -55,7 +53,8 @@ public class Service {
 		publisherDAO.writePublisher(publisher);
 	}
 	
-	public static int findNextAuthorID() {
+	//Gets the next author ID by finding the highest ID in the table and returns one more than that
+	public int findNextAuthorID() {
 		List<Author> authorList = AuthorDAO.getAuthors();
     	if (authorList == null || authorList.size() == 0) {
 			return 1;
@@ -63,14 +62,11 @@ public class Service {
 
 		int id = 0;
 		int max = 0;
+		//Gets the id for all the authors and sets the new max
 		for (Author author : authorList) {
 			try {
-
-//				System.out.println(author.getID());
 				id = author.getID();
 			} catch (NullPointerException e) {}
-			// System.out.println("The parsed ID is: " + Integer.parseInt(id) + " for
-			// Author: " + record[1]);
 			if (id > max) {
 				max = id;
 			}
@@ -80,51 +76,43 @@ public class Service {
 		return max+1;
 	}
 
-	public static int findNextBookID() {
+	//Gets the next book ID
+	public int findNextBookID() {
 
-    	List<Book> bookList = BookDAO.getBooks();
-//    	BookDAO.printBookList();
-		//System.out.println("We are in fNAID: " + Arrays.deepToString(manager.getBookTable()));
+    	List<Book> bookList = bookDAO.getBooks();
 		if (bookList == null || bookList.size() == 0) {
 			return 1;
 		}
 		int id = 0;
 		int max = 0;
+		//Loops through all of the books and gets the next id
 		for (Book book : bookList) {
 			try {
-
-//				System.out.println(book.getID());
 				id = book.getID();
-			} catch (NullPointerException e) {
-			}
-			// System.out.println("The parsed ID is: " + Integer.parseInt(id) + " for
-			// Book: " + record[1]);
+			} catch (NullPointerException e) {}
 			if (id > max) {
 				max = id;
 			}
 		}
-		// System.out.println("The max is: " + max);
 
 		return max+1;
 	}
 
-	public static int findNextPublisherID() {
+	//Gets the next publisher ID
+	public int findNextPublisherID() {
 
-    	List<Publisher> publisherList = PublisherDAO.getPublishers();
-//   	System.out.print("Printing publisher list: ");
-//    	PublisherDAO.printPublisherList();
+    	List<Publisher> publisherList = publisherDAO.getPublishers();
     	if (publisherList == null || publisherList.size() == 0) {
 			return 1;
 		}
 
 		int id = 0;
 		int max = 0;
+		//Loops through and get the next publisher ID
 		for (Publisher publisher : publisherList) {
 			try {
-//				System.out.println(publisher.getID());
 				id = publisher.getID();
-			} catch (NullPointerException e) {
-			}
+			} catch (NullPointerException e) {}
 			if (id > max) {
 				max = id;
 			}
@@ -133,18 +121,22 @@ public class Service {
 
 		return max+1;
 	}
-
+	
+	
+	//
+	//Key checks, checks if the ID is in the table and returns according boolean value
+	//
+	//Checks to see if the author ID and publisher ID's are in their tables
 	public boolean bookKeyCheckAP(int a_id, int p_id) {
-		// System.out.println("Author array: " + Arrays.deepToString(authorTable));
-		// System.out.println("Publisher array: " +
-		// Arrays.deepToString(publisherTable));
 		if (authorKeyCheck(a_id) && publisherKeyCheck(p_id))
 			return true;
 		else
 			return false;
 	}
+	
+	//Checks to see if the book ID exists in the book table
 	public boolean bookKeyCheck(int b_id){
-		List<Book> books = BookDAO.getBooks();
+		List<Book> books = bookDAO.getBooks();
 		try {
 			for(Book book : books) {
 				if(book.getID() == b_id) {
@@ -158,6 +150,7 @@ public class Service {
 		return false;
 	}
 	
+	//Checks to see if the author ID exists in the author table
 	public boolean authorKeyCheck(int a_id) {
 		List<Author> authors = AuthorDAO.getAuthors();
 		//manager.printAuthorList();
@@ -175,9 +168,9 @@ public class Service {
 		return false;
 	}
 	
+	//Checks to see if the publisher ID exists in the publisher table
 	public boolean publisherKeyCheck(int p_id) {
-		List<Publisher> publishers = PublisherDAO.getPublishers();
-		//manager.printPublisherList();
+		List<Publisher> publishers = publisherDAO.getPublishers();
 		try {
 			for(Publisher publisher : publishers) {
 
@@ -192,7 +185,20 @@ public class Service {
 		return false;
 	}
 	
-	public static boolean readAuthorByID(int authorID)
+	public boolean readAuthorAll() {
+		Boolean[] valid = new Boolean[1];
+		valid[0] = false;
+		List<Author> authors = AuthorDAO.getAuthors();
+		authors.stream().forEach(author ->{
+			System.out.println("Author ID: " + author.getID());
+			System.out.println("Author Name: " + author.getName().replaceAll("~", ","));
+			valid[0] = true;
+		});
+		return valid[0];
+	}
+	
+	//Creates a stream that filters out the authors and prints it to console
+	public boolean readAuthorByID(int authorID)
 	{
 		Boolean[] valid = new Boolean[1];
 		valid[0] = false;
@@ -202,7 +208,7 @@ public class Service {
 			.forEach(author -> 
 				{
 					System.out.println("Author ID: " + author.getID());
-					System.out.println("Title: " + author.getName().replaceAll("~", ","));
+					System.out.println("Author Name: " + author.getName().replaceAll("~", ","));
 					valid[0] = true;
 				});
 		
@@ -210,6 +216,8 @@ public class Service {
 //			System.out.println("Author ID: " + author.getID());
 //			System.out.println("Title: " + author.getName().replaceAll("~", ","));
 //		} );
+
+		//The previous stream is the same as this loop
 //		for(Author author : authors){
 //			//System.out.println("The name being checked is: '" + record[1] + "' against : '" + authorName + "'");
 //			if (author.getID() == authorID) {
@@ -220,19 +228,22 @@ public class Service {
 //		}
 		return valid[0];
 	}
-	public static boolean readAuthorByName(String authorName)
+	
+	//Filters authors that have a user inputed name and prints to console
+	public boolean readAuthorByName(String authorName)
 	{
 		Boolean[] valid = new Boolean[1];
 		valid[0] = false;
 		List<Author> authors = AuthorDAO.getAuthors();
 		authors.stream()
-		.filter(author -> author.getName() == authorName)
-		.forEach(author -> 
+			.filter(author -> author.getName().equals(authorName))
+			.forEach(author -> 
 			{
 				System.out.println("Author ID: " + author.getID());
-				System.out.println("Title: " + author.getName().replaceAll("~", ","));
+				System.out.println("Author Name: " + author.getName().replaceAll("~", ","));
 				valid[0] = true;
 			});
+		//The previous stream is the same as this loop
 //		for(Author author : authors){
 //			//System.out.println("The name being checked is: '" + author.getName() + "' against : '" + authorName + "'");
 //			if (author.getName().compareTo(authorName) == 0) {
@@ -244,11 +255,23 @@ public class Service {
 		return valid[0];
 	}
 	
-	
-	public static boolean readBookByID(int bookID) {
+	public boolean readBookAll() {
 		Boolean[] valid = new Boolean[1];
 		valid[0] = false;
-		List<Book> books = BookDAO.getBooks();
+		List<Book> books = bookDAO.getBooks();
+		books.stream().forEach(book ->{
+			System.out.println("Book ID: " + book.getID());
+			System.out.println("Book Name: " + book.getName().replaceAll("~", ","));
+			valid[0] = true;
+		});
+		return valid[0];
+	}
+	//Reads desired book ID
+	//Prints to console
+	public boolean readBookByID(int bookID) {
+		Boolean[] valid = new Boolean[1];
+		valid[0] = false;
+		List<Book> books = bookDAO.getBooks();
 		books.stream()
 			.filter(book -> book.getID() == bookID)
 			.forEach(book -> 
@@ -275,12 +298,12 @@ public class Service {
 //		}
 //		return valid;
 	}
-	public static boolean readBookByName(String bookName) {
+	public boolean readBookByName(String bookName) {
 		Boolean[] valid = new Boolean[1];
 		valid[0] = false;
-		List<Book> books = BookDAO.getBooks();
+		List<Book> books = bookDAO.getBooks();
 		books.stream()
-			.filter(book -> book.getName() == bookName)
+			.filter(book -> book.getName().equals(bookName))
 			.forEach(book -> 
 			{
 				System.out.println("Book ID: " + book.getID());
@@ -291,7 +314,8 @@ public class Service {
 			});
 		return valid[0];
 		
-		
+
+		//The previous stream is the same as this loop
 //		boolean valid = false;
 //		List<Book> books = BookDAO.getBooks();
 //		for(Book book : books){
@@ -306,10 +330,10 @@ public class Service {
 //		}
 //		return valid;
 	}
-	public static boolean readBookByAuthorID(int authorID) {
+	public boolean readBookByAuthorID(int authorID) {
 		Boolean[] valid = new Boolean[1];
 		valid[0] = false;
-		List<Book> books = BookDAO.getBooks();
+		List<Book> books = bookDAO.getBooks();
 		books.stream()
 			.filter(book -> book.getAuthor() == authorID)
 			.forEach(book -> 
@@ -321,8 +345,7 @@ public class Service {
 				valid[0] = true;
 			});
 		return valid[0];
-		
-		
+		//The previous stream is the same as this loop
 //		boolean valid = false;
 //		List<Book> books = BookDAO.getBooks();
 //		for(Book book : books){
@@ -337,11 +360,11 @@ public class Service {
 //		}
 //		return valid;
 	}
-	public static boolean readBookByPublisherID(int publisherID) {
+	public boolean readBookByPublisherID(int publisherID) {
 		
 		Boolean[] valid = new Boolean[1];
 		valid[0] = false;
-		List<Book> books = BookDAO.getBooks();
+		List<Book> books = bookDAO.getBooks();
 		books.stream()
 			.filter(book -> book.getPublisher() == publisherID)
 			.forEach(book -> 
@@ -353,6 +376,9 @@ public class Service {
 				valid[0] = true;
 			});
 		return valid[0];
+		
+
+		//The previous stream is the same as this loop
 //		boolean valid = false;
 //		List<Book> books = BookDAO.getBooks();
 //		for(Book book : books){
@@ -368,11 +394,23 @@ public class Service {
 //		return valid;
 	}
 	
-	public static boolean readPublisherByID(int publisherID) {
+	public boolean readPublisherAll() {
+		Boolean[] valid = new Boolean[1];
+		valid[0] = false;
+		List<Publisher> publishers = publisherDAO.getPublishers();
+		publishers.stream().forEach(publisher ->{
+			System.out.println("Publisher ID: " + publisher.getID());
+			System.out.println("Publisher Name: " + publisher.getName().replaceAll("~", ","));
+			valid[0] = true;
+		});
+		return valid[0];
+	}
+	//Reads the publishers by desired input from user
+	public boolean readPublisherByID(int publisherID) {
 		
 		Boolean[] valid = new Boolean[1];
 		valid[0] = false;
-		List<Publisher> publishers = PublisherDAO.getPublishers();
+		List<Publisher> publishers = publisherDAO.getPublishers();
 		publishers.stream()
 			.filter(publisher -> publisher.getID() == publisherID)
 			.forEach(publisher -> 
@@ -383,6 +421,9 @@ public class Service {
 				valid[0] = true;
 			});
 		return valid[0];
+		
+
+		//The previous stream is the same as this loop
 //		boolean valid = false;
 //		List<Publisher> publishers = PublisherDAO.getPublishers();
 //		for(Publisher publisher : publishers){
@@ -396,12 +437,12 @@ public class Service {
 //		}
 //		return valid;
 	}
-	public static boolean readPublisherByName(String publisherName) {
+	public boolean readPublisherByName(String publisherName) {
 		Boolean[] valid = new Boolean[1];
 		valid[0] = false;
-		List<Publisher> publishers = PublisherDAO.getPublishers();
+		List<Publisher> publishers = publisherDAO.getPublishers();
 		publishers.stream()
-			.filter(publisher -> publisher.getName() == publisherName)
+			.filter(publisher -> publisher.getName().equals(publisherName))
 			.forEach(publisher -> 
 			{
 				System.out.println("Publisher ID: " + publisher.getID());
@@ -410,6 +451,9 @@ public class Service {
 				valid[0] = true;
 			});
 		return valid[0];
+		
+
+		//The previous stream is the same as this loop
 //		boolean valid = false;
 //		List<Publisher> publishers = PublisherDAO.getPublishers();
 //		for(Publisher publisher : publishers){
@@ -423,13 +467,13 @@ public class Service {
 //		}
 //		return valid;
 	}
-	public static boolean readPublisherByAddress(String publisherAddress) {
+	public boolean readPublisherByAddress(String publisherAddress) {
 		
 		Boolean[] valid = new Boolean[1];
 		valid[0] = false;
-		List<Publisher> publishers = PublisherDAO.getPublishers();
+		List<Publisher> publishers = publisherDAO.getPublishers();
 		publishers.stream()
-			.filter(publisher -> publisher.getAddress() == publisherAddress)
+			.filter(publisher -> publisher.getAddress().equals(publisherAddress))
 			.forEach(publisher -> 
 			{
 				System.out.println("Publisher ID: " + publisher.getID());
@@ -438,6 +482,9 @@ public class Service {
 				valid[0] = true;
 			});
 		return valid[0];
+		
+
+		//The previous stream is the same as this loop
 //		boolean valid = false;
 //		List<Publisher> publishers = PublisherDAO.getPublishers();
 //		for(Publisher publisher : publishers){
@@ -452,6 +499,12 @@ public class Service {
 //		return valid;
 	}
 	
+	
+	//
+	//Updates
+	//
+	//Gets the ID from the user and the new field information and sets the record to have new information
+	//
 	public boolean updateAnAuthor(int authorID, String authorName) {
 		Boolean[] updated = new Boolean[1];
 		updated[0] = false;
@@ -464,8 +517,11 @@ public class Service {
 					updated[0] = true;
 				}
 			);
-		AuthorDAO.resetAuthors(authors);
+		authorDAO.resetAuthors(authors);
 		return updated[0];
+		
+
+		//The previous stream is the same as this loop
 //		for(Author author : authors){
 //			//System.out.println("The name being checked is: '" + record[1] + "' against : '" + authorName + "'");
 //			if (author.getID() == authorID) {
@@ -481,7 +537,8 @@ public class Service {
 
 		Boolean[] updated = new Boolean[1];
 		updated[0] = false;
-		List<Book> books = BookDAO.getBooks();
+		List<Book> books = bookDAO.getBooks();
+		//Filters the books and sets new book
 		books.stream()
 			.filter(book -> book.getID() == bookID)
 			.forEach(book -> 
@@ -492,9 +549,11 @@ public class Service {
 					updated[0] = true;
 				}
 			);
-		BookDAO.resetBooks(books);
+		bookDAO.resetBooks(books);
 		return updated[0];
 		
+
+		//The previous stream is the same as this loop
 //		boolean updated = false;
 //		List<Book> books = BookDAO.getBooks();
 //		if(bookKeyCheckAP(authorID, publisherID) == false) {
@@ -512,10 +571,11 @@ public class Service {
 //		return updated;
 	}
 
+
 	public boolean updateAPublisher(int publisherID, String publisherName, String publisherAddress) {
 		Boolean[] updated = new Boolean[1];
 		updated[0] = false;
-		List<Publisher> publishers = PublisherDAO.getPublishers();
+		List<Publisher> publishers = publisherDAO.getPublishers();
 		publishers.stream()
 			.filter(publisher -> publisher.getID() == publisherID)
 			.forEach(publisher -> 
@@ -525,9 +585,11 @@ public class Service {
 					updated[0] = true;
 				}
 			);
-		PublisherDAO.resetPublishers(publishers);
+		publisherDAO.resetPublishers(publishers);
 		return updated[0];
 		
+
+		//The previous stream is the same as this loop
 //		boolean updated = false;
 //		List<Publisher> publishers = PublisherDAO.getPublishers();
 //		for(Publisher publisher : publishers){
@@ -541,11 +603,14 @@ public class Service {
 //		return updated;
 	}
 
+	//
+	//Deletes
+	//
+	//Gets what ID the user wants to delete and removes it from the list
+	//Calls DAO to update file
+	//Resets the file
 	public boolean deleteAnAuthor(int authorID) {
 		boolean updated = false;
-//		int newNumRecords = Manager.getNumberOfRecords("Authors.csv")-1;
-//		String[][] authorTable = manager.getAuthorTable();
-//		String[][] newAuthorTable = new String[newNumRecords][];
 		List<Author> authors = AuthorDAO.getAuthors();
 
 		List<Author> toRemoveAuthors = new ArrayList<Author>();
@@ -559,7 +624,7 @@ public class Service {
 //		System.out.println(toRemoveAuthors.toString());
 		
 		//Get books associated with this author
-		List<Book> books = BookDAO.getBooks();
+		List<Book> books = bookDAO.getBooks();
 		List<Book> toRemoveBooks = new ArrayList<Book>();
 		//String[][] bookTable = manager.getBookTable();
 
@@ -572,15 +637,15 @@ public class Service {
 		books.removeAll(toRemoveBooks);
 		authors.removeAll(toRemoveAuthors);
 
-		BookDAO.resetBooks(books);
-		AuthorDAO.resetAuthors(authors);
+		bookDAO.resetBooks(books);
+		authorDAO.resetAuthors(authors);
 		return updated;
 	}
 
 	public boolean deleteABook(int bookID) {
 		boolean updated = false;
 		
-		List<Book> books = BookDAO.getBooks();
+		List<Book> books = bookDAO.getBooks();
 
 		List<Book> toRemoveBooks = new ArrayList<Book>();
 		for(Book book : books){
@@ -591,14 +656,14 @@ public class Service {
 		}
 
 		books.removeAll(toRemoveBooks);
-		BookDAO.resetBooks(books);
+		bookDAO.resetBooks(books);
 		return updated;
 	}
 
 	public boolean deleteAPublisher(int publisherID) {
 		boolean updated = false;
 		
-		List<Publisher> publishers = PublisherDAO.getPublishers();
+		List<Publisher> publishers = publisherDAO.getPublishers();
 		//manager.printPublisherList();
 		List<Publisher> toRemovePublishers = new ArrayList<Publisher>();
 		
@@ -610,7 +675,7 @@ public class Service {
 		}
 		
 		//Get books associated with this author
-		List<Book> books = BookDAO.getBooks();
+		List<Book> books = bookDAO.getBooks();
 		List<Book> toRemoveBooks = new ArrayList<Book>();
 		//String[][] bookTable = manager.getBookTable();
 
@@ -623,9 +688,10 @@ public class Service {
 		books.removeAll(toRemoveBooks);
 		publishers.removeAll(toRemovePublishers);
 		
-		BookDAO.resetBooks(books);
-		PublisherDAO.resetPublishers(publishers);
+		bookDAO.resetBooks(books);
+		publisherDAO.resetPublishers(publishers);
 		return updated;
 	}
+	
 
 }

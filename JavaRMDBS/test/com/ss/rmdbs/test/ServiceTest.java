@@ -81,9 +81,9 @@ public class ServiceTest {
 		publisherList.add(publisher3);
 		////System.out.println("Publisher added.");
 		
-		AuthorDAO.resetAuthors(authorList);
-		PublisherDAO.resetPublishers(publisherList);
-		BookDAO.resetBooks(bookList);
+		authorDAO.resetAuthors(authorList);
+		publisherDAO.resetPublishers(publisherList);
+		bookDAO.resetBooks(bookList);
 		////System.out.println("Initialized.");
 	}
 
@@ -91,7 +91,7 @@ public class ServiceTest {
 	public void testFindNextAuthorID() {
 		////System.out.println("Executing Test findNextAuthorID.");
 //		AuthorDAO.resetAuthors(authorList);
-		int given = Service.findNextAuthorID();
+		int given = service.findNextAuthorID();
 		int expected = 4;
 		assertEquals(expected, given);
 	}
@@ -99,7 +99,7 @@ public class ServiceTest {
 	public void testFindNextBookID() {
 		////System.out.println("Executing Test findNextBookID.");
 //		BookDAO.resetBooks(bookList);
-		int given = Service.findNextBookID();
+		int given = service.findNextBookID();
 		int expected = 4;
 		assertEquals(expected, given);
 	}
@@ -107,7 +107,7 @@ public class ServiceTest {
 	public void testFindNextPublisherID() {
 		////System.out.println("Executing Test findNextPublisherID.");
 //		PublisherDAO.resetPublishers(publisherList);
-		int given = Service.findNextPublisherID();
+		int given = service.findNextPublisherID();
 		int expected = 4;
 		assertEquals(expected, given);
 	}
@@ -177,26 +177,26 @@ public class ServiceTest {
 	
 	@Test
 	public void testReadAuthorByIDTrue() {
-		boolean given = Service.readAuthorByID(2);
+		boolean given = service.readAuthorByID(2);
 		boolean expected = true;
 		assertEquals(expected, given);
 	}
 	@Test
 	public void testReadAuthorByIDFalse() {
-		boolean given = Service.readAuthorByID(6);
+		boolean given = service.readAuthorByID(6);
 		boolean expected = false;
 		assertEquals(expected, given);
 	}
 	
 	@Test
 	public void testReadAuthorByNameTrue() {
-		boolean given = Service.readAuthorByName("Tim");
+		boolean given = service.readAuthorByName("Tim");
 		boolean expected = true;
 		assertEquals(expected, given);
 	}
 	@Test
 	public void testReadAuthorByNameFalse() {
-		boolean given = Service.readAuthorByName("Johnson");
+		boolean given = service.readAuthorByName("Johnson");
 		boolean expected = false;
 		assertEquals(expected, given);
 	}
@@ -204,88 +204,88 @@ public class ServiceTest {
 	
 	@Test
 	public void testReadBookByIDTrue() {
-		boolean given = Service.readBookByID(2);
+		boolean given = service.readBookByID(2);
 		boolean expected = true;
 		assertEquals(expected, given);
 	}
 	@Test
 	public void testReadBookByIDFalse() {
-		boolean given = Service.readBookByID(6);
+		boolean given = service.readBookByID(6);
 		boolean expected = false;
 		assertEquals(expected, given);
 	}
 	
 	@Test
 	public void testReadBookByNameTrue() {
-		boolean given = Service.readBookByName("Bible");
+		boolean given = service.readBookByName("Bible");
 		boolean expected = true;
 		assertEquals(expected, given);
 	}
 	@Test
 	public void testReadBookByNameFalse() {
-		boolean given = Service.readBookByName("Not the Bible");
+		boolean given = service.readBookByName("Not the Bible");
 		boolean expected = false;
 		assertEquals(expected, given);
 	}
 	@Test
 	public void testReadBookByAuthorIDTrue() {
-		boolean given = Service.readBookByAuthorID(3);
+		boolean given = service.readBookByAuthorID(3);
 		boolean expected = true;
 		assertEquals(expected, given);
 	}
 	@Test
 	public void testReadBookByAuthorIDFalse() {
-		boolean given = Service.readBookByAuthorID(6);
+		boolean given = service.readBookByAuthorID(6);
 		boolean expected = false;
 		assertEquals(expected, given);
 	}
 	@Test
 	public void testReadBookByPublisherIDTrue() {
-		boolean given = Service.readBookByPublisherID(3);
+		boolean given = service.readBookByPublisherID(3);
 		boolean expected = true;
 		assertEquals(expected, given);
 	}
 	
 	@Test
 	public void testReadBookByPublisherIDFalse() {
-		boolean given = Service.readBookByPublisherID(6);
+		boolean given = service.readBookByPublisherID(6);
 		boolean expected = false;
 		assertEquals(expected, given);
 	}
 	@Test
 	public void testReadPublisherByIDTrue() {
-		boolean given = Service.readPublisherByID(2);
+		boolean given = service.readPublisherByID(2);
 		boolean expected = true;
 		assertEquals(expected, given);
 	}
 	@Test
 	public void testReadPublisherByIDFalse() {
-		boolean given = Service.readPublisherByID(6);
+		boolean given = service.readPublisherByID(6);
 		boolean expected = false;
 		assertEquals(expected, given);
 	}
 	
 	@Test
 	public void testReadPublisherByNameTrue() {
-		boolean given = Service.readPublisherByName("Maria");
+		boolean given = service.readPublisherByName("Maria");
 		boolean expected = true;
 		assertEquals(expected, given);
 	}
 	@Test
 	public void testReadPublisherByNameFalse() {
-		boolean given = Service.readPublisherByName("Johnson");
+		boolean given = service.readPublisherByName("Johnson");
 		boolean expected = false;
 		assertEquals(expected, given);
 	}
 	@Test
 	public void testReadPublisherByAddressTrue() {
-		boolean given = Service.readPublisherByAddress("Downtown");
+		boolean given = service.readPublisherByAddress("Downtown");
 		boolean expected = true;
 		assertEquals(expected, given);
 	}
 	@Test
 	public void testReadPublisherByAddressFalse() {
-		boolean given = Service.readPublisherByAddress("Johnson");
+		boolean given = service.readPublisherByAddress("Johnson");
 		boolean expected = false;
 		assertEquals(expected, given);
 	}
